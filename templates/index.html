@@ -1,0 +1,4792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Laboratório de Rede Neural</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+
+<body>
+
+    <!-- ===================================================== -->
+    <!-- CABEÇALHO -->
+    <!-- ===================================================== -->
+
+<!-- ===================================================== -->
+<!-- MENU PRINCIPAL -->
+<!-- ===================================================== -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+
+    <div class="container-fluid px-4">
+
+        <!-- MARCA -->
+
+        <a
+            class="navbar-brand fw-bold"
+            href="/home"
+        >
+            🧠 Laboratório ML
+        </a>
+
+
+        <!-- BOTÃO MOBILE -->
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#menuPrincipal"
+            aria-controls="menuPrincipal"
+            aria-expanded="false"
+            aria-label="Abrir menu"
+        >
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+
+        <!-- MENU -->
+
+        <div
+            class="collapse navbar-collapse"
+            id="menuPrincipal"
+        >
+
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+
+
+                <!-- HOME -->
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="/home"
+                    >
+                        Início
+                    </a>
+
+                </li>
+
+
+                <!-- REDES NEURAIS -->
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link active"
+                        href="/"
+                    >
+                        Redes Neurais
+                    </a>
+
+                </li>
+
+
+                <!-- SUPERVISIONADO -->
+
+                <li class="nav-item">
+
+                    <span
+                        class="nav-link menu-indisponivel"
+                        title="Laboratório em desenvolvimento"
+                    >
+                        Supervisionado
+
+                        <small class="menu-em-breve">
+                            Em breve
+                        </small>
+
+                    </span>
+
+                </li>
+
+
+                <!-- NÃO SUPERVISIONADO -->
+
+                <li class="nav-item">
+
+                    <span
+                        class="nav-link menu-indisponivel"
+                        title="Laboratório em desenvolvimento"
+                    >
+                        Não Supervisionado
+
+                        <small class="menu-em-breve">
+                            Em breve
+                        </small>
+
+                    </span>
+
+                </li>
+
+
+                <!-- REFORÇO -->
+
+                <li class="nav-item">
+
+                    <span
+                        class="nav-link menu-indisponivel"
+                        title="Laboratório em desenvolvimento"
+                    >
+                        Reforço
+
+                        <small class="menu-em-breve">
+                            Em breve
+                        </small>
+
+                    </span>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+    <main class="container-fluid px-4 py-5">
+
+        <!-- ================================================= -->
+        <!-- TÍTULO -->
+        <!-- ================================================= -->
+
+        <div class="text-center mb-5">
+
+            <h1 class="fw-bold">
+                Aprendizado de uma Rede Neural
+            </h1>
+
+            <p class="text-muted">
+                Da preparação dos dados ao treinamento,
+                avaliação e predição.
+            </p>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- WIZARD -->
+        <!-- ================================================= -->
+
+        <div class="wizard-wrapper mb-5">
+
+            <div class="wizard">
+
+
+                <!-- PASSO 1 -->
+
+                <button
+                    type="button"
+                    class="wizard-step active"
+                    data-step="1"
+                >
+
+                    <span class="wizard-number">
+                        1
+                    </span>
+
+                    <span class="wizard-label">
+                        Importação
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 2 -->
+
+                <button
+                    type="button"
+                    class="wizard-step {% if colunas %}completed{% else %}locked{% endif %}"
+                    data-step="2"
+                    {% if not colunas %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if colunas %}
+                            ✓
+                        {% else %}
+                            2
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Prévia
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 3 -->
+
+                <button
+                    type="button"
+                    class="wizard-step {% if analise_colunas %}completed{% else %}locked{% endif %}"
+                    data-step="3"
+                    {% if not analise_colunas %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if analise_colunas %}
+                            ✓
+                        {% else %}
+                            3
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Limpeza
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 4 -->
+
+                <button
+                    type="button"
+                    class="wizard-step {% if normalizacao %}completed{% else %}locked{% endif %}"
+                    data-step="4"
+                    {% if not normalizacao %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if normalizacao %}
+                            ✓
+                        {% else %}
+                            4
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Normalização
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 5 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if variaveis_confirmadas %}
+                        completed
+                    {% elif not variaveis_disponiveis %}
+                        locked
+                    {% endif %}"
+                    data-step="5"
+                    {% if not variaveis_disponiveis %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if variaveis_confirmadas %}
+                            ✓
+                        {% else %}
+                            5
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Variáveis
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 6 -->
+
+                <button
+                    type="button"
+                    id="wizard-treinamento"
+                    class="wizard-step
+                    {% if modelo_treinado %}
+                        completed
+                    {% elif not variaveis_confirmadas %}
+                        locked
+                    {% endif %}"
+                    data-step="6"
+                    {% if not variaveis_confirmadas %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if modelo_treinado %}
+                            ✓
+                        {% else %}
+                            6
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Treinamento
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 7 -->
+
+                <button
+                    type="button"
+                    id="wizard-avaliacao"
+                    class="wizard-step
+                    {% if avaliacao_concluida %}
+                        completed
+                    {% elif not modelo_treinado %}
+                        locked
+                    {% endif %}"
+                    data-step="7"
+                    {% if not modelo_treinado %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if avaliacao_concluida %}
+                            ✓
+                        {% else %}
+                            7
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Avaliação
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 8 -->
+
+                <button
+                    type="button"
+                    id="wizard-predicao"
+                    class="wizard-step
+                    {% if predicao_concluida %}
+                        completed
+                    {% elif not avaliacao_concluida %}
+                        locked
+                    {% endif %}"
+                    data-step="8"
+                    {% if not avaliacao_concluida %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if predicao_concluida %}
+                            ✓
+                        {% else %}
+                            8
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Predição
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 1 -->
+        <!-- IMPORTAÇÃO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-1"
+            class="wizard-content"
+        >
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="row">
+
+                        <div class="col-lg-7">
+
+                            <h3 class="fw-bold">
+                                1. Importar Base de Dados
+                            </h3>
+
+                            <p class="text-muted">
+                                Selecione uma planilha contendo
+                                os dados que serão utilizados
+                                pelo sistema.
+                            </p>
+
+
+                            <form
+                                method="POST"
+                                enctype="multipart/form-data"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="acao"
+                                    value="importar"
+                                >
+
+
+                                <label
+                                    class="form-label fw-semibold"
+                                >
+                                    Planilha
+                                </label>
+
+
+                                <input
+                                    type="file"
+                                    class="form-control form-control-lg"
+                                    name="arquivo"
+                                    accept=".csv,.xlsx"
+                                    required
+                                >
+
+
+                                <div class="form-text mb-4">
+                                    Formatos aceitos:
+                                    CSV e XLSX.
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary btn-lg"
+                                >
+                                    Importar Planilha
+                                </button>
+
+                            </form>
+
+
+                            {% if erro %}
+
+                            <div class="alert alert-danger mt-4">
+
+                                <strong>
+                                    Erro
+                                </strong>
+
+                                <br>
+
+                                {{ erro }}
+
+                            </div>
+
+                            {% endif %}
+
+
+                            {% if nome_arquivo %}
+
+                            <div class="alert alert-success mt-4">
+
+                                <strong>
+                                    ✓ Arquivo carregado
+                                </strong>
+
+                                <br>
+
+                                {{ nome_arquivo }}
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="col-lg-5 mt-4 mt-lg-0">
+
+                            <div class="info-box">
+
+                                <h5 class="fw-bold">
+                                    Fluxo do Sistema
+                                </h5>
+
+                                <hr>
+
+                                <p>1. Importação</p>
+                                <p>2. Prévia</p>
+                                <p>3. Limpeza</p>
+                                <p>4. Normalização</p>
+                                <p>5. Variáveis</p>
+                                <p>6. Treinamento</p>
+                                <p>7. Avaliação</p>
+                                <p class="mb-0">8. Predição</p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 2 -->
+        <!-- PRÉVIA -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-2"
+            class="wizard-content d-none"
+        >
+
+            {% if colunas %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        2. Prévia da Base
+                    </h3>
+
+                    <p class="text-muted">
+                        Confira as colunas e os primeiros
+                        registros encontrados.
+                    </p>
+
+
+                    <h5 class="fw-bold mt-4">
+                        Colunas identificadas
+                    </h5>
+
+
+                    {% for coluna in colunas %}
+
+                    <span
+                        class="badge bg-primary me-2 mb-2 p-2"
+                    >
+                        {{ coluna }}
+                    </span>
+
+                    {% endfor %}
+
+
+                    {% if dados %}
+
+                    <div class="table-responsive mt-4">
+
+                        <table
+                            class="table table-bordered table-hover align-middle"
+                        >
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    {% for coluna in colunas %}
+
+                                    <th>
+                                        {{ coluna }}
+                                    </th>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for linha in dados %}
+
+                                <tr>
+
+                                    {% for coluna in colunas %}
+
+                                    <td>
+                                        {{ linha[coluna] }}
+                                    </td>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <div class="text-end mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-go-step="3"
+                        >
+                            Próxima: Limpeza →
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 3 -->
+        <!-- LIMPEZA -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-3"
+            class="wizard-content d-none"
+        >
+
+            {% if analise_colunas %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        3. Análise e Limpeza
+                    </h3>
+
+
+                    <p class="text-muted">
+                        O sistema verifica a qualidade
+                        da base antes do treinamento.
+                    </p>
+
+
+                    <div class="row g-3 mt-3">
+
+
+                        <div class="col-md-3">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Registros
+                                </span>
+
+                                <strong>
+                                    {{ total_registros }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Colunas
+                                </span>
+
+                                <strong>
+                                    {{ total_colunas }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Valores ausentes
+                                </span>
+
+                                <strong>
+                                    {{ valores_ausentes }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Duplicados
+                                </span>
+
+                                <strong>
+                                    {{ duplicados }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-responsive mt-5">
+
+                        <table class="table table-bordered table-hover">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>Coluna</th>
+                                    <th>Tipo</th>
+                                    <th>Tipo interno</th>
+                                    <th>Valores únicos</th>
+                                    <th>Ausentes</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for item in analise_colunas %}
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            {{ item.coluna }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ item.tipo }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.tipo_python }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.unicos }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.nulos }}
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="row g-4 mt-3">
+
+
+                        <div class="col-md-6">
+
+                            <div class="clean-box before">
+
+                                <h5 class="fw-bold">
+                                    Antes da Limpeza
+                                </h5>
+
+                                <p>
+                                    Registros:
+                                    <strong>
+                                        {{ total_registros }}
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Ausentes:
+                                    <strong>
+                                        {{ valores_ausentes }}
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Duplicados:
+                                    <strong>
+                                        {{ duplicados }}
+                                    </strong>
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="clean-box after">
+
+                                <h5 class="fw-bold">
+                                    Depois da Limpeza
+                                </h5>
+
+                                <p>
+                                    Registros válidos:
+                                    <strong>
+                                        {{ registros_apos_limpeza }}
+                                    </strong>
+                                </p>
+
+                                <p class="text-success">
+                                    ✓ Duplicidades removidas
+                                </p>
+
+                                <p class="text-success">
+                                    ✓ Registros incompletos removidos
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="d-flex justify-content-between mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-go-step="2"
+                        >
+                            ← Prévia
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-go-step="4"
+                        >
+                            Próxima: Normalização →
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 4 -->
+        <!-- NORMALIZAÇÃO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-4"
+            class="wizard-content d-none"
+        >
+
+            {% if normalizacao %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        4. Normalização
+                    </h3>
+
+
+                    <p class="text-muted">
+                        As variáveis numéricas são ajustadas
+                        para uma escala entre 0 e 1.
+                    </p>
+
+
+                    <div class="alert alert-info mt-4">
+
+                        <strong>
+                            Normalização Min-Max
+                        </strong>
+
+                        <br><br>
+
+                        x normalizado =
+                        (x - mínimo)
+                        /
+                        (máximo - mínimo)
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>Variável</th>
+                                    <th>Mínimo</th>
+                                    <th>Máximo</th>
+                                    <th>Valor original</th>
+                                    <th>Valor normalizado</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for item in normalizacao %}
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            {{ item.coluna }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ item.minimo }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.maximo }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.original }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.normalizado }}
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    {% if dados_normalizados %}
+
+                    <h4 class="fw-bold mt-5">
+                        Prévia Normalizada
+                    </h4>
+
+
+                    <div class="table-responsive mt-3">
+
+                        <table class="table table-bordered">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    {% for coluna in colunas %}
+
+                                    <th>
+                                        {{ coluna }}
+                                    </th>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for linha in dados_normalizados %}
+
+                                <tr>
+
+                                    {% for coluna in colunas %}
+
+                                    <td>
+                                        {{ linha[coluna] }}
+                                    </td>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <div class="d-flex justify-content-between mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-go-step="3"
+                        >
+                            ← Limpeza
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-go-step="5"
+                        >
+                            Próxima: Variáveis →
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 5 -->
+        <!-- VARIÁVEIS -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-5"
+            class="wizard-content d-none"
+        >
+
+            {% if variaveis_disponiveis %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        5. Seleção das Variáveis
+                    </h3>
+
+
+                    <p class="text-muted">
+                        Escolha as variáveis que serão usadas
+                        como entrada e a variável de saída.
+                    </p>
+
+
+                    <form method="POST">
+
+                        <input
+                            type="hidden"
+                            name="acao"
+                            value="confirmar_variaveis"
+                        >
+
+
+                        <div class="table-responsive mt-4">
+
+                            <table class="table table-bordered">
+
+                                <thead class="table-light">
+
+                                    <tr>
+
+                                        <th>Coluna</th>
+                                        <th>Tipo</th>
+                                        <th>Valores únicos</th>
+                                        <th>Sugestão</th>
+                                        <th class="text-center">Entrada</th>
+                                        <th class="text-center">Saída</th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for item in variaveis_disponiveis %}
+
+                                    <tr>
+
+                                        <td>
+                                            <strong>
+                                                {{ item.coluna }}
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            {{ item.tipo }}
+                                        </td>
+
+                                        <td>
+                                            {{ item.unicos }}
+                                        </td>
+
+                                        <td>
+                                            {{ item.sugestao }}
+                                        </td>
+
+
+                                        <td class="text-center">
+
+                                            {% if item.tipo == "Numérica" or item.tipo == "Binária" %}
+
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input input-entrada"
+                                                name="entradas"
+                                                value="{{ item.coluna }}"
+
+                                                {% if item.coluna in entradas_selecionadas %}
+                                                checked
+                                                {% endif %}
+                                            >
+
+                                            {% else %}
+
+                                            —
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td class="text-center">
+
+                                            {% if item.tipo == "Binária" %}
+
+                                            <input
+                                                type="radio"
+                                                class="form-check-input input-saida"
+                                                name="saida"
+                                                value="{{ item.coluna }}"
+
+                                                {% if item.coluna == saida_selecionada %}
+                                                checked
+                                                {% endif %}
+                                            >
+
+                                            {% else %}
+
+                                            —
+
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        {% if mensagem_variaveis %}
+
+                        <div class="alert alert-danger">
+                            {{ mensagem_variaveis }}
+                        </div>
+
+                        {% endif %}
+
+
+                        <div class="card bg-light border-0 mt-4">
+
+                            <div class="card-body">
+
+                                <h5 class="fw-bold">
+                                    Configuração Selecionada
+                                </h5>
+
+
+                                <div class="mt-3">
+
+                                    <strong>
+                                        Entradas
+                                    </strong>
+
+                                    <div
+                                        id="resumo-entradas"
+                                        class="mt-2"
+                                    ></div>
+
+                                </div>
+
+
+                                <div class="mt-3">
+
+                                    <strong>
+                                        Saída
+                                    </strong>
+
+                                    <div
+                                        id="resumo-saida"
+                                        class="mt-2"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-between mt-4">
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                data-go-step="4"
+                            >
+                                ← Normalização
+                            </button>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Confirmar Variáveis
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    {% if variaveis_confirmadas %}
+
+                    <div class="alert alert-success mt-4">
+
+                        <strong>
+                            ✓ Variáveis confirmadas
+                        </strong>
+
+                        <br><br>
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-go-step="6"
+                        >
+                            Ir para Treinamento →
+                        </button>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 6 -->
+        <!-- TREINAMENTO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-6"
+            class="wizard-content d-none"
+        >
+
+            {% if variaveis_confirmadas %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        6. Treinamento da Rede Neural
+                    </h3>
+
+
+                    <p class="text-muted">
+                        O Perceptron ajustará seus pesos
+                        e bias a partir dos registros
+                        reservados para treinamento.
+                    </p>
+
+
+                    <!-- CONCEITOS -->
+
+                    <div class="row g-3 mt-3">
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Época
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Uma passagem completa por todos
+                                        os registros de treinamento.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Peso
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Define a influência de cada
+                                        variável na decisão do neurônio.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Bias
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Valor adicional usado
+                                        para ajustar o limite
+                                        de decisão.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-4 mt-4">
+
+
+                        <!-- CONFIGURAÇÃO -->
+
+                        <div class="col-lg-5">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold">
+                                        Configuração
+                                    </h5>
+
+
+                                    <label class="form-label mt-3">
+                                        Taxa de aprendizado
+                                    </label>
+
+
+                                    <input
+                                        id="taxa-aprendizado"
+                                        type="number"
+                                        class="form-control"
+                                        value="0.1"
+                                        min="0.001"
+                                        step="0.01"
+                                    >
+
+
+                                    <label class="form-label mt-3">
+                                        Máximo de épocas
+                                    </label>
+
+
+                                    <input
+                                        id="numero-epocas"
+                                        type="number"
+                                        class="form-control"
+                                        value="100"
+                                        min="1"
+                                    >
+
+
+                                    <label class="form-label mt-3">
+                                        Percentual de treinamento
+                                    </label>
+
+
+                                    <select
+                                        id="percentual-treino"
+                                        class="form-select"
+                                    >
+
+                                        <option value="70">
+                                            70%
+                                        </option>
+
+                                        <option
+                                            value="80"
+                                            selected
+                                        >
+                                            80%
+                                        </option>
+
+                                        <option value="90">
+                                            90%
+                                        </option>
+
+                                    </select>
+
+
+                                    <button
+                                        type="button"
+                                        id="botao-treinar"
+                                        class="btn btn-primary btn-lg w-100 mt-4"
+                                    >
+                                        ▶ Treinar Rede
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- MODELO -->
+
+                        <div class="col-lg-7">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold">
+                                        Modelo Configurado
+                                    </h5>
+
+
+                                    <h6 class="fw-bold mt-4">
+                                        Entradas
+                                    </h6>
+
+
+                                    {% for entrada in entradas_selecionadas %}
+
+                                    <span
+                                        class="badge bg-primary me-2 mb-2 p-2"
+                                    >
+
+                                        X{{ loop.index }}
+                                        =
+                                        {{ entrada }}
+
+                                    </span>
+
+                                    {% endfor %}
+
+
+                                    <h6 class="fw-bold mt-4">
+                                        Saída
+                                    </h6>
+
+
+                                    <span
+                                        class="badge bg-success p-2"
+                                    >
+
+                                        Y =
+                                        {{ saida_selecionada }}
+
+                                    </span>
+
+
+                                    <hr>
+
+
+                                    <p>
+                                        Pesos iniciais:
+                                        <strong>0</strong>
+                                    </p>
+
+
+                                    <p>
+                                        Bias inicial:
+                                        <strong>0</strong>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROGRESSO -->
+
+                    <div
+                        id="painel-progresso"
+                        class="d-none mt-4"
+                    >
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar progress-bar-striped progress-bar-animated"
+                                style="width:100%"
+                            >
+                                Treinando...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TERMINAL -->
+
+                    <div class="mt-5">
+
+                        <div
+                            class="d-flex justify-content-between align-items-center"
+                        >
+
+                            <div>
+
+                                <h4 class="fw-bold">
+                                    Terminal do Treinamento
+                                </h4>
+
+                                <p class="text-muted">
+                                    Acompanhe os cálculos
+                                    em tempo real.
+                                </p>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                id="limpar-terminal"
+                                class="btn btn-outline-secondary btn-sm"
+                            >
+                                Limpar
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="terminal-treinamento"
+                            class="mt-3 p-4 rounded"
+                            style="
+                                background:#101828;
+                                color:#d1e7dd;
+                                height:430px;
+                                overflow-y:auto;
+                                font-family:Consolas, Monaco, monospace;
+                            "
+                        >
+                            Aguardando treinamento...
+                        </div>
+
+                    </div>
+
+
+                    <!-- RESULTADO -->
+
+                    <div
+                        id="resultado-treinamento"
+                        class="{% if not modelo_treinado %}d-none{% endif %} mt-5"
+                    >
+
+                        <div class="alert alert-success">
+
+                            <strong>
+                                ✓ Treinamento concluído
+                            </strong>
+
+                        </div>
+
+
+                        <div class="row g-3">
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Épocas executadas
+                                    </span>
+
+                                    <strong id="resultado-epocas">
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Erros finais
+                                    </span>
+
+                                    <strong id="resultado-erros">
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Bias final
+                                    </span>
+
+                                    <strong id="resultado-bias">
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="table-responsive mt-4">
+
+                            <table class="table table-bordered">
+
+                                <thead class="table-light">
+
+                                    <tr>
+
+                                        <th>
+                                            Entrada
+                                        </th>
+
+                                        <th>
+                                            Peso final
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody id="tabela-pesos">
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="text-end">
+
+                            <button
+                                type="button"
+                                id="botao-ir-avaliacao"
+                                class="btn btn-primary"
+                                {% if not modelo_treinado %}disabled{% endif %}
+                            >
+                                Próxima: Avaliação →
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 7 -->
+        <!-- AVALIAÇÃO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-7"
+            class="wizard-content d-none"
+        >
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        7. Avaliação do Modelo
+                    </h3>
+
+
+                    <p class="text-muted">
+                        O modelo será testado com registros
+                        que não foram utilizados
+                        para ajustar seus pesos.
+                    </p>
+
+
+                    <div class="alert alert-info mt-4">
+
+                        <strong>
+                            O que será avaliado?
+                        </strong>
+
+                        <br><br>
+
+                        O modelo irá prever a classificação
+                        dos registros reservados para teste
+                        e comparar o resultado com
+                        a resposta real.
+
+                    </div>
+
+
+                    <div class="text-center my-4">
+
+                        <button
+                            type="button"
+                            id="botao-avaliar"
+                            class="btn btn-primary btn-lg px-5"
+                        >
+                            Avaliar Modelo
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="resultado-avaliacao"
+                        class="d-none"
+                    >
+
+
+                        <!-- RESULTADO GERAL -->
+
+                        <h4 class="fw-bold mt-5">
+                            Resultado da Avaliação
+                        </h4>
+
+
+                        <div class="row g-3 mt-2">
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Registros avaliados
+                                    </span>
+
+                                    <strong id="avaliacao-total">
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Acertos
+                                    </span>
+
+                                    <strong
+                                        id="avaliacao-acertos"
+                                        class="text-success"
+                                    >
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Erros
+                                    </span>
+
+                                    <strong
+                                        id="avaliacao-erros"
+                                        class="text-danger"
+                                    >
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- INDICADORES -->
+
+                        <h4 class="fw-bold mt-5">
+                            Indicadores de Desempenho
+                        </h4>
+
+
+                        <p class="text-muted">
+                            Os indicadores abaixo são calculados
+                            automaticamente a partir
+                            da base de teste.
+                        </p>
+
+
+                        <div class="row g-4 mt-2">
+
+
+                            <div class="col-md-6 col-xl-3">
+
+                                <div
+                                    class="card shadow-sm border-0 h-100 text-center"
+                                >
+
+                                    <div class="card-body py-4">
+
+                                        <div class="text-muted mb-2">
+                                            Acurácia
+                                        </div>
+
+                                        <div
+                                            id="metrica-acuracia"
+                                            class="display-5 fw-bold text-primary"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="text-muted">
+                                            das previsões corretas
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6 col-xl-3">
+
+                                <div
+                                    class="card shadow-sm border-0 h-100 text-center"
+                                >
+
+                                    <div class="card-body py-4">
+
+                                        <div class="text-muted mb-2">
+                                            Precisão
+                                        </div>
+
+                                        <div
+                                            id="metrica-precisao"
+                                            class="display-5 fw-bold text-success"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="text-muted">
+                                            dos positivos previstos
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6 col-xl-3">
+
+                                <div
+                                    class="card shadow-sm border-0 h-100 text-center"
+                                >
+
+                                    <div class="card-body py-4">
+
+                                        <div class="text-muted mb-2">
+                                            Recall
+                                        </div>
+
+                                        <div
+                                            id="metrica-recall"
+                                            class="display-5 fw-bold text-warning"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="text-muted">
+                                            dos positivos encontrados
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6 col-xl-3">
+
+                                <div
+                                    class="card shadow-sm border-0 h-100 text-center"
+                                >
+
+                                    <div class="card-body py-4">
+
+                                        <div class="text-muted mb-2">
+                                            F1-Score
+                                        </div>
+
+                                        <div
+                                            id="metrica-f1"
+                                            class="display-5 fw-bold"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="text-muted">
+                                            equilíbrio entre as métricas
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DEFINIÇÕES -->
+
+                        <h4 class="fw-bold mt-5">
+                            O que significa cada indicador?
+                        </h4>
+
+
+                        <div class="row g-4 mt-2">
+
+
+                            <div class="col-lg-6">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <h5 class="text-primary fw-bold">
+                                            Acurácia
+                                        </h5>
+
+                                        <p>
+                                            Percentual total
+                                            de classificações corretas.
+                                        </p>
+
+                                        <strong>
+                                            Quanto o modelo acertou
+                                            no geral?
+                                        </strong>
+
+                                        <hr>
+
+                                        <div class="text-center">
+
+                                            (VP + VN)
+                                            /
+                                            (VP + VN + FP + FN)
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-lg-6">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <h5 class="text-success fw-bold">
+                                            Precisão
+                                        </h5>
+
+                                        <p>
+                                            Entre os casos classificados
+                                            como 1, indica quantos
+                                            realmente pertenciam
+                                            à classe 1.
+                                        </p>
+
+                                        <strong>
+                                            Quando o modelo disse 1,
+                                            quantas vezes estava certo?
+                                        </strong>
+
+                                        <hr>
+
+                                        <div class="text-center">
+                                            VP / (VP + FP)
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-lg-6">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <h5 class="text-warning fw-bold">
+                                            Recall
+                                        </h5>
+
+                                        <p>
+                                            Mede quantos dos casos
+                                            realmente positivos
+                                            foram identificados.
+                                        </p>
+
+                                        <strong>
+                                            Dos casos que realmente
+                                            eram 1, quantos foram encontrados?
+                                        </strong>
+
+                                        <hr>
+
+                                        <div class="text-center">
+                                            VP / (VP + FN)
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-lg-6">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <h5 class="fw-bold">
+                                            F1-Score
+                                        </h5>
+
+                                        <p>
+                                            Combina Precisão e Recall
+                                            em um único indicador.
+                                        </p>
+
+                                        <strong>
+                                            Existe equilíbrio entre
+                                            precisão e recall?
+                                        </strong>
+
+                                        <hr>
+
+                                        <div class="text-center">
+
+                                            2 ×
+                                            (Precisão × Recall)
+                                            /
+                                            (Precisão + Recall)
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- MATRIZ -->
+
+                        <h4 class="fw-bold mt-5">
+                            Matriz de Confusão
+                        </h4>
+
+
+                        <div class="row g-4 mt-2">
+
+
+                            <div class="col-lg-7">
+
+                                <div class="table-responsive">
+
+                                    <table
+                                        class="table table-bordered text-center align-middle"
+                                    >
+
+                                        <thead class="table-light">
+
+                                            <tr>
+
+                                                <th
+                                                    rowspan="2"
+                                                    class="align-middle"
+                                                >
+                                                    Valor Real
+                                                </th>
+
+                                                <th colspan="2">
+                                                    Valor Previsto
+                                                </th>
+
+                                            </tr>
+
+                                            <tr>
+                                                <th>0</th>
+                                                <th>1</th>
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody>
+
+                                            <tr>
+
+                                                <th>
+                                                    0
+                                                </th>
+
+                                                <td>
+
+                                                    <strong
+                                                        id="matriz-vn"
+                                                        class="fs-3 text-success"
+                                                    >
+                                                        -
+                                                    </strong>
+
+                                                    <br>
+
+                                                    Verdadeiro Negativo
+
+                                                </td>
+
+                                                <td>
+
+                                                    <strong
+                                                        id="matriz-fp"
+                                                        class="fs-3 text-danger"
+                                                    >
+                                                        -
+                                                    </strong>
+
+                                                    <br>
+
+                                                    Falso Positivo
+
+                                                </td>
+
+                                            </tr>
+
+
+                                            <tr>
+
+                                                <th>
+                                                    1
+                                                </th>
+
+                                                <td>
+
+                                                    <strong
+                                                        id="matriz-fn"
+                                                        class="fs-3 text-danger"
+                                                    >
+                                                        -
+                                                    </strong>
+
+                                                    <br>
+
+                                                    Falso Negativo
+
+                                                </td>
+
+                                                <td>
+
+                                                    <strong
+                                                        id="matriz-vp"
+                                                        class="fs-3 text-success"
+                                                    >
+                                                        -
+                                                    </strong>
+
+                                                    <br>
+
+                                                    Verdadeiro Positivo
+
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-lg-5">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <h5 class="fw-bold">
+                                            Como interpretar?
+                                        </h5>
+
+                                        <hr>
+
+                                        <p>
+                                            <strong>VP:</strong>
+                                            era 1 e previu 1.
+                                        </p>
+
+                                        <p>
+                                            <strong>VN:</strong>
+                                            era 0 e previu 0.
+                                        </p>
+
+                                        <p>
+                                            <strong>FP:</strong>
+                                            era 0 e previu 1.
+                                        </p>
+
+                                        <p>
+                                            <strong>FN:</strong>
+                                            era 1 e previu 0.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- RESULTADO POR REGISTRO -->
+
+                        <h4 class="fw-bold mt-5">
+                            Resultado por Registro
+                        </h4>
+
+
+                        <div class="table-responsive mt-3">
+
+                            <table
+                                class="table table-bordered table-hover"
+                            >
+
+                                <thead class="table-light">
+
+                                    <tr>
+
+                                        <th>Registro</th>
+                                        <th>Soma</th>
+                                        <th>Esperado</th>
+                                        <th>Previsto</th>
+                                        <th>Resultado</th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody id="tabela-avaliacao">
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-between mt-4">
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                data-go-step="6"
+                            >
+                                ← Treinamento
+                            </button>
+
+
+                            <button
+                                type="button"
+                                id="ir-predicao"
+                                class="btn btn-primary"
+                            >
+                                Próxima: Predição →
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 8 -->
+        <!-- PREDIÇÃO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-8"
+            class="wizard-content d-none"
+        >
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        8. Predição com Novos Dados
+                    </h3>
+
+
+                    <p class="text-muted">
+                        Utilize o modelo treinado
+                        para classificar uma nova base.
+                    </p>
+
+
+                    <!-- CONCEITOS -->
+
+                    <div class="row g-3 mt-3">
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Predição
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Utilização do modelo
+                                        treinado para classificar
+                                        novos registros.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Nova Base
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Dados que não participaram
+                                        do treinamento do modelo.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Modelo Treinado
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Utiliza os pesos e o bias
+                                        obtidos no Passo 6.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- COLUNAS OBRIGATÓRIAS -->
+
+                    <div class="card bg-light border-0 mt-4">
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                Colunas obrigatórias
+                            </h5>
+
+                            <p class="text-muted">
+                                A nova base precisa conter
+                                todas as variáveis utilizadas
+                                como entrada no treinamento.
+                            </p>
+
+
+                            {% for entrada in entradas_selecionadas %}
+
+                            <span
+                                class="badge bg-primary me-2 mb-2 p-2"
+                            >
+                                {{ entrada }}
+                            </span>
+
+                            {% endfor %}
+
+
+                            <hr>
+
+
+                            <p class="mb-0">
+
+                                A variável de saída
+
+                                <strong>
+                                    {{ saida_selecionada }}
+                                </strong>
+
+                                não é obrigatória.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- UPLOAD -->
+
+                    <div class="card border-0 mt-4">
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                Importar Nova Base
+                            </h5>
+
+
+                            <p class="text-muted">
+                                Antes de realizar a predição,
+                                o sistema verificará se
+                                a estrutura da base é compatível
+                                com o modelo treinado.
+                            </p>
+
+
+                            <form
+                                id="form-predicao"
+                                enctype="multipart/form-data"
+                            >
+
+                                <input
+                                    type="file"
+                                    id="arquivo-predicao"
+                                    name="arquivo_predicao"
+                                    class="form-control"
+                                    accept=".csv,.xlsx"
+                                    required
+                                >
+
+
+                                <button
+                                    type="submit"
+                                    id="botao-validar-base"
+                                    class="btn btn-primary mt-3"
+                                >
+                                    Validar Base
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- VALIDAÇÃO -->
+
+                    <div
+                        id="validacao-predicao"
+                        class="d-none mt-4"
+                    >
+                    </div>
+
+
+                    <!-- PRÉVIA -->
+
+                    <div
+                        id="bloco-previa-predicao"
+                        class="d-none mt-5"
+                    >
+
+                        <h4 class="fw-bold">
+                            Prévia da Nova Base
+                        </h4>
+
+
+                        <div
+                            id="previa-predicao"
+                            class="table-responsive mt-3"
+                        >
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="botao-executar-predicao"
+                            class="btn btn-success btn-lg mt-3"
+                            disabled
+                        >
+                            Executar Predição
+                        </button>
+
+                    </div>
+
+
+                    <!-- RESULTADO -->
+
+                    <div
+                        id="resultado-predicao"
+                        class="d-none mt-5"
+                    >
+
+                        <div class="alert alert-success">
+
+                            <strong>
+                                ✓ Predição concluída
+                            </strong>
+
+                        </div>
+
+
+                        <div class="row g-3">
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Registros processados
+                                    </span>
+
+                                    <strong id="predicao-total">
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Classificados como 0
+                                    </span>
+
+                                    <strong id="predicao-zero">
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Classificados como 1
+                                    </span>
+
+                                    <strong id="predicao-um">
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <h4 class="fw-bold mt-5">
+                            Resultado das Predições
+                        </h4>
+
+
+                        <div
+                            id="tabela-resultado-predicao"
+                            class="table-responsive mt-3"
+                        >
+                        </div>
+
+
+                        <a
+                            href="/baixar-predicoes"
+                            class="btn btn-success mt-3"
+                        >
+                            Baixar Resultado em Excel
+                        </a>
+
+                    </div>
+
+
+                    <div class="mt-5">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-go-step="7"
+                        >
+                            ← Avaliação
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- ABERTURA AUTOMÁTICA -->
+        <!-- ================================================= -->
+
+        {% if predicao_concluida %}
+
+        <div
+            id="abrir-etapa"
+            data-etapa="8"
+            style="display:none;"
+        ></div>
+
+        {% elif avaliacao_concluida %}
+
+        <div
+            id="abrir-etapa"
+            data-etapa="7"
+            style="display:none;"
+        ></div>
+
+        {% elif modelo_treinado %}
+
+        <div
+            id="abrir-etapa"
+            data-etapa="6"
+            style="display:none;"
+        ></div>
+
+        {% elif variaveis_confirmadas %}
+
+        <div
+            id="abrir-etapa"
+            data-etapa="5"
+            style="display:none;"
+        ></div>
+
+        {% elif colunas %}
+
+        <div
+            id="abrir-etapa"
+            data-etapa="2"
+            style="display:none;"
+        ></div>
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- ===================================================== -->
+    <!-- JAVASCRIPT -->
+    <!-- ===================================================== -->
+
+    <script>
+
+        /* =====================================================
+           WIZARD
+        ===================================================== */
+
+        const botoesWizard =
+            document.querySelectorAll(
+                ".wizard-step"
+            );
+
+
+        const conteudos =
+            document.querySelectorAll(
+                ".wizard-content"
+            );
+
+
+        function abrirEtapa(numero) {
+
+            const botao =
+                document.querySelector(
+                    '[data-step="' +
+                    numero +
+                    '"]'
+                );
+
+
+            if (
+                !botao
+                ||
+                botao.disabled
+            ) {
+                return;
+            }
+
+
+            conteudos.forEach(
+                function (item) {
+
+                    item.classList.add(
+                        "d-none"
+                    );
+
+                }
+            );
+
+
+            botoesWizard.forEach(
+                function (item) {
+
+                    item.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            const tela =
+                document.getElementById(
+                    "step-" +
+                    numero
+                );
+
+
+            if (tela) {
+
+                tela.classList.remove(
+                    "d-none"
+                );
+
+            }
+
+
+            botao.classList.add(
+                "active"
+            );
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        botoesWizard.forEach(
+            function (botao) {
+
+                botao.addEventListener(
+                    "click",
+                    function () {
+
+                        abrirEtapa(
+                            this.dataset.step
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        document
+            .querySelectorAll(
+                "[data-go-step]"
+            )
+            .forEach(
+                function (botao) {
+
+                    botao.addEventListener(
+                        "click",
+                        function () {
+
+                            abrirEtapa(
+                                this.dataset.goStep
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+        const abrirAutomatico =
+            document.getElementById(
+                "abrir-etapa"
+            );
+
+
+        if (abrirAutomatico) {
+
+            abrirEtapa(
+                abrirAutomatico.dataset.etapa
+            );
+
+        }
+
+
+        /* =====================================================
+           FUNÇÃO PARA MARCAR ETAPA
+        ===================================================== */
+
+        function concluirEtapa(
+            idBotao
+        ) {
+
+            const botao =
+                document.getElementById(
+                    idBotao
+                );
+
+
+            if (!botao) {
+                return;
+            }
+
+
+            botao.disabled =
+                false;
+
+
+            botao.classList.remove(
+                "locked"
+            );
+
+
+            botao.classList.add(
+                "completed"
+            );
+
+
+            const numero =
+                botao.querySelector(
+                    ".wizard-number"
+                );
+
+
+            if (numero) {
+
+                numero.textContent =
+                    "✓";
+
+            }
+
+        }
+
+
+        function liberarEtapa(
+            idBotao
+        ) {
+
+            const botao =
+                document.getElementById(
+                    idBotao
+                );
+
+
+            if (!botao) {
+                return;
+            }
+
+
+            botao.disabled =
+                false;
+
+
+            botao.classList.remove(
+                "locked"
+            );
+
+        }
+
+
+        /* =====================================================
+           PASSO 5
+        ===================================================== */
+
+        const inputsEntradas =
+            document.querySelectorAll(
+                ".input-entrada"
+            );
+
+
+        const inputsSaidas =
+            document.querySelectorAll(
+                ".input-saida"
+            );
+
+
+        function atualizarVariaveis() {
+
+            const resumoEntradas =
+                document.getElementById(
+                    "resumo-entradas"
+                );
+
+
+            const resumoSaida =
+                document.getElementById(
+                    "resumo-saida"
+                );
+
+
+            if (!resumoEntradas) {
+                return;
+            }
+
+
+            let saida =
+                null;
+
+
+            inputsSaidas.forEach(
+                function (input) {
+
+                    if (input.checked) {
+
+                        saida =
+                            input.value;
+
+                    }
+
+                }
+            );
+
+
+            inputsEntradas.forEach(
+                function (input) {
+
+                    if (
+                        saida
+                        &&
+                        input.value === saida
+                    ) {
+
+                        input.checked =
+                            false;
+
+
+                        input.disabled =
+                            true;
+
+                    }
+
+                    else {
+
+                        input.disabled =
+                            false;
+
+                    }
+
+                }
+            );
+
+
+            let html =
+                "";
+
+
+            let contador =
+                1;
+
+
+            inputsEntradas.forEach(
+                function (input) {
+
+                    if (input.checked) {
+
+                        html +=
+
+                            '<span class="badge bg-primary me-2 mb-2 p-2">' +
+
+                            "X" +
+                            contador +
+                            " = " +
+                            input.value +
+
+                            "</span>";
+
+
+                        contador++;
+
+                    }
+
+                }
+            );
+
+
+            resumoEntradas.innerHTML =
+                html
+                ||
+                '<span class="text-muted">Nenhuma entrada selecionada.</span>';
+
+
+            resumoSaida.innerHTML =
+                saida
+                ?
+                (
+                    '<span class="badge bg-success p-2">' +
+                    "Y = " +
+                    saida +
+                    "</span>"
+                )
+                :
+                (
+                    '<span class="text-muted">' +
+                    "Nenhuma saída selecionada." +
+                    "</span>"
+                );
+
+        }
+
+
+        inputsEntradas.forEach(
+            function (input) {
+
+                input.addEventListener(
+                    "change",
+                    atualizarVariaveis
+                );
+
+            }
+        );
+
+
+        inputsSaidas.forEach(
+            function (input) {
+
+                input.addEventListener(
+                    "change",
+                    atualizarVariaveis
+                );
+
+            }
+        );
+
+
+        atualizarVariaveis();
+
+
+        /* =====================================================
+           PASSO 6
+           TREINAMENTO
+        ===================================================== */
+
+        const botaoTreinar =
+            document.getElementById(
+                "botao-treinar"
+            );
+
+
+        const terminal =
+            document.getElementById(
+                "terminal-treinamento"
+            );
+
+
+        const painelProgresso =
+            document.getElementById(
+                "painel-progresso"
+            );
+
+
+        let streamTreinamento =
+            null;
+
+
+        function escreverTerminal(
+            texto,
+            tipo
+        ) {
+
+            if (!terminal) {
+                return;
+            }
+
+
+            const linha =
+                document.createElement(
+                    "div"
+                );
+
+
+            const cores = {
+
+                epoca:
+                    "#6ea8fe",
+
+                ajuste:
+                    "#ffc107",
+
+                erro:
+                    "#ff6b6b",
+
+                acerto:
+                    "#75b798",
+
+                sucesso:
+                    "#20c997",
+
+                resumo:
+                    "#c29ffa",
+
+                inicio:
+                    "#ffffff",
+
+                separador:
+                    "#667085",
+
+                calculo:
+                    "#d1e7dd",
+
+                resultado:
+                    "#e9ecef",
+
+                info:
+                    "#adb5bd"
+            };
+
+
+            linha.style.color =
+                cores[tipo]
+                ||
+                "#d1e7dd";
+
+
+            linha.textContent =
+                texto;
+
+
+            terminal.appendChild(
+                linha
+            );
+
+
+            terminal.scrollTop =
+                terminal.scrollHeight;
+
+        }
+
+
+        if (botaoTreinar) {
+
+            botaoTreinar.addEventListener(
+                "click",
+                function () {
+
+
+                    const taxa =
+                        document.getElementById(
+                            "taxa-aprendizado"
+                        ).value;
+
+
+                    const epocas =
+                        document.getElementById(
+                            "numero-epocas"
+                        ).value;
+
+
+                    const percentual =
+                        document.getElementById(
+                            "percentual-treino"
+                        ).value;
+
+
+                    if (
+                        Number(taxa) <= 0
+                    ) {
+
+                        alert(
+                            "Informe uma taxa de aprendizado válida."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (
+                        Number(epocas) < 1
+                    ) {
+
+                        alert(
+                            "Informe pelo menos uma época."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (streamTreinamento) {
+
+                        streamTreinamento.close();
+
+                    }
+
+
+                    terminal.innerHTML =
+                        "";
+
+
+                    painelProgresso.classList.remove(
+                        "d-none"
+                    );
+
+
+                    botaoTreinar.disabled =
+                        true;
+
+
+                    botaoTreinar.textContent =
+                        "Treinando...";
+
+
+                    const url =
+
+                        "/treinar-stream"
+
+                        +
+
+                        "?taxa=" +
+                        encodeURIComponent(
+                            taxa
+                        )
+
+                        +
+
+                        "&epocas=" +
+                        encodeURIComponent(
+                            epocas
+                        )
+
+                        +
+
+                        "&percentual=" +
+                        encodeURIComponent(
+                            percentual
+                        );
+
+
+                    streamTreinamento =
+                        new EventSource(
+                            url
+                        );
+
+
+                    streamTreinamento.onmessage =
+                        function (evento) {
+
+
+                            const dados =
+                                JSON.parse(
+                                    evento.data
+                                );
+
+
+                            if (
+                                dados.tipo ===
+                                "fim"
+                            ) {
+
+                                streamTreinamento.close();
+
+
+                                painelProgresso
+                                    .classList
+                                    .add(
+                                        "d-none"
+                                    );
+
+
+                                botaoTreinar.disabled =
+                                    false;
+
+
+                                botaoTreinar.textContent =
+                                    "Treinar Novamente";
+
+
+                                mostrarTreinamento(
+                                    dados.mensagem
+                                );
+
+
+                                return;
+
+                            }
+
+
+                            escreverTerminal(
+                                dados.mensagem,
+                                dados.tipo
+                            );
+
+                        };
+
+
+                    streamTreinamento.onerror =
+                        function () {
+
+                            if (
+                                streamTreinamento
+                            ) {
+
+                                streamTreinamento.close();
+
+                            }
+
+
+                            painelProgresso.classList.add(
+                                "d-none"
+                            );
+
+
+                            botaoTreinar.disabled =
+                                false;
+
+
+                            botaoTreinar.textContent =
+                                "Treinar Rede";
+
+                        };
+
+                }
+            );
+
+        }
+
+
+        document
+            .getElementById(
+                "limpar-terminal"
+            )
+            ?.addEventListener(
+                "click",
+                function () {
+
+                    if (terminal) {
+
+                        terminal.innerHTML =
+                            "";
+
+                    }
+
+                }
+            );
+
+
+        function mostrarTreinamento(
+            resultado
+        ) {
+
+            const bloco =
+                document.getElementById(
+                    "resultado-treinamento"
+                );
+
+
+            bloco.classList.remove(
+                "d-none"
+            );
+
+
+            document.getElementById(
+                "resultado-epocas"
+            ).textContent =
+                resultado.epocas_executadas;
+
+
+            document.getElementById(
+                "resultado-erros"
+            ).textContent =
+                resultado.erros_finais;
+
+
+            document.getElementById(
+                "resultado-bias"
+            ).textContent =
+                resultado.bias;
+
+
+            const tabela =
+                document.getElementById(
+                    "tabela-pesos"
+                );
+
+
+            tabela.innerHTML =
+                "";
+
+
+            resultado.entradas.forEach(
+                function (
+                    entrada,
+                    indice
+                ) {
+
+                    const linha =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    const colunaEntrada =
+                        document.createElement(
+                            "td"
+                        );
+
+
+                    const colunaPeso =
+                        document.createElement(
+                            "td"
+                        );
+
+
+                    colunaEntrada.textContent =
+
+                        "W" +
+                        (indice + 1) +
+                        " — " +
+                        entrada;
+
+
+                    colunaPeso.textContent =
+
+                        resultado.pesos[
+                            indice
+                        ];
+
+
+                    linha.appendChild(
+                        colunaEntrada
+                    );
+
+
+                    linha.appendChild(
+                        colunaPeso
+                    );
+
+
+                    tabela.appendChild(
+                        linha
+                    );
+
+                }
+            );
+
+
+            concluirEtapa(
+                "wizard-treinamento"
+            );
+
+
+            liberarEtapa(
+                "wizard-avaliacao"
+            );
+
+
+            const botao =
+                document.getElementById(
+                    "botao-ir-avaliacao"
+                );
+
+
+            if (botao) {
+
+                botao.disabled =
+                    false;
+
+
+                botao.onclick =
+                    function () {
+
+                        abrirEtapa(
+                            7
+                        );
+
+                    };
+
+            }
+
+        }
+
+
+        /* =====================================================
+           PASSO 7
+           AVALIAÇÃO
+        ===================================================== */
+
+        const botaoAvaliar =
+            document.getElementById(
+                "botao-avaliar"
+            );
+
+
+        if (botaoAvaliar) {
+
+            botaoAvaliar.addEventListener(
+                "click",
+                async function () {
+
+
+                    botaoAvaliar.disabled =
+                        true;
+
+
+                    botaoAvaliar.textContent =
+                        "Avaliando...";
+
+
+                    try {
+
+                        const resposta =
+                            await fetch(
+                                "/avaliar-modelo"
+                            );
+
+
+                        const dados =
+                            await resposta.json();
+
+
+                        if (!dados.sucesso) {
+
+                            alert(
+                                dados.mensagem
+                            );
+
+                            return;
+
+                        }
+
+
+                        /* RESUMO */
+
+                        document.getElementById(
+                            "avaliacao-total"
+                        ).textContent =
+                            dados.total;
+
+
+                        document.getElementById(
+                            "avaliacao-acertos"
+                        ).textContent =
+                            dados.acertos;
+
+
+                        document.getElementById(
+                            "avaliacao-erros"
+                        ).textContent =
+                            dados.erros;
+
+
+                        /* INDICADORES */
+
+                        document.getElementById(
+                            "metrica-acuracia"
+                        ).textContent =
+                            dados.acuracia +
+                            "%";
+
+
+                        document.getElementById(
+                            "metrica-precisao"
+                        ).textContent =
+                            dados.precisao +
+                            "%";
+
+
+                        document.getElementById(
+                            "metrica-recall"
+                        ).textContent =
+                            dados.recall +
+                            "%";
+
+
+                        document.getElementById(
+                            "metrica-f1"
+                        ).textContent =
+                            dados.f1 +
+                            "%";
+
+
+                        /* MATRIZ */
+
+                        document.getElementById(
+                            "matriz-vp"
+                        ).textContent =
+                            dados.matriz.vp;
+
+
+                        document.getElementById(
+                            "matriz-vn"
+                        ).textContent =
+                            dados.matriz.vn;
+
+
+                        document.getElementById(
+                            "matriz-fp"
+                        ).textContent =
+                            dados.matriz.fp;
+
+
+                        document.getElementById(
+                            "matriz-fn"
+                        ).textContent =
+                            dados.matriz.fn;
+
+
+                        /* TABELA */
+
+                        const tabela =
+                            document.getElementById(
+                                "tabela-avaliacao"
+                            );
+
+
+                        tabela.innerHTML =
+                            "";
+
+
+                        dados.resultados.forEach(
+                            function (item) {
+
+
+                                const linha =
+                                    document.createElement(
+                                        "tr"
+                                    );
+
+
+                                const valores = [
+
+                                    item.registro,
+                                    item.soma,
+                                    item.esperado,
+                                    item.previsto
+
+                                ];
+
+
+                                valores.forEach(
+                                    function (valor) {
+
+                                        const td =
+                                            document.createElement(
+                                                "td"
+                                            );
+
+
+                                        td.textContent =
+                                            valor;
+
+
+                                        linha.appendChild(
+                                            td
+                                        );
+
+                                    }
+                                );
+
+
+                                const tdResultado =
+                                    document.createElement(
+                                        "td"
+                                    );
+
+
+                                tdResultado.textContent =
+                                    item.resultado;
+
+
+                                tdResultado.classList.add(
+                                    "fw-bold"
+                                );
+
+
+                                if (
+                                    item.resultado ===
+                                    "Acerto"
+                                ) {
+
+                                    tdResultado.classList.add(
+                                        "text-success"
+                                    );
+
+                                }
+
+                                else {
+
+                                    tdResultado.classList.add(
+                                        "text-danger"
+                                    );
+
+                                }
+
+
+                                linha.appendChild(
+                                    tdResultado
+                                );
+
+
+                                tabela.appendChild(
+                                    linha
+                                );
+
+                            }
+                        );
+
+
+                        document
+                            .getElementById(
+                                "resultado-avaliacao"
+                            )
+                            .classList
+                            .remove(
+                                "d-none"
+                            );
+
+
+                        concluirEtapa(
+                            "wizard-avaliacao"
+                        );
+
+
+                        liberarEtapa(
+                            "wizard-predicao"
+                        );
+
+
+                    }
+
+                    catch (erro) {
+
+                        console.error(
+                            erro
+                        );
+
+
+                        alert(
+                            "Erro ao avaliar o modelo."
+                        );
+
+                    }
+
+                    finally {
+
+                        botaoAvaliar.disabled =
+                            false;
+
+
+                        botaoAvaliar.textContent =
+                            "Avaliar Novamente";
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        document
+            .getElementById(
+                "ir-predicao"
+            )
+            ?.addEventListener(
+                "click",
+                function () {
+
+                    abrirEtapa(
+                        8
+                    );
+
+                }
+            );
+
+
+        /* =====================================================
+           PASSO 8
+           VALIDAR BASE
+        ===================================================== */
+
+        const formPredicao =
+            document.getElementById(
+                "form-predicao"
+            );
+
+
+        if (formPredicao) {
+
+            formPredicao.addEventListener(
+                "submit",
+                async function (
+                    evento
+                ) {
+
+                    evento.preventDefault();
+
+
+                    const campoArquivo =
+                        document.getElementById(
+                            "arquivo-predicao"
+                        );
+
+
+                    const botaoValidar =
+                        document.getElementById(
+                            "botao-validar-base"
+                        );
+
+
+                    if (
+                        !campoArquivo.files.length
+                    ) {
+
+                        alert(
+                            "Selecione uma planilha."
+                        );
+
+                        return;
+
+                    }
+
+
+                    botaoValidar.disabled =
+                        true;
+
+
+                    botaoValidar.textContent =
+                        "Validando...";
+
+
+                    const formData =
+                        new FormData();
+
+
+                    formData.append(
+                        "arquivo_predicao",
+                        campoArquivo.files[0]
+                    );
+
+
+                    try {
+
+                        const resposta =
+                            await fetch(
+                                "/validar-base-predicao",
+                                {
+                                    method:
+                                        "POST",
+
+                                    body:
+                                        formData
+                                }
+                            );
+
+
+                        const dados =
+                            await resposta.json();
+
+
+                        mostrarValidacaoPredicao(
+                            dados
+                        );
+
+
+                    }
+
+                    catch (erro) {
+
+                        console.error(
+                            erro
+                        );
+
+
+                        alert(
+                            "Erro ao validar a nova base."
+                        );
+
+                    }
+
+                    finally {
+
+                        botaoValidar.disabled =
+                            false;
+
+
+                        botaoValidar.textContent =
+                            "Validar Base";
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        function mostrarValidacaoPredicao(
+            dados
+        ) {
+
+            const bloco =
+                document.getElementById(
+                    "validacao-predicao"
+                );
+
+
+            const previa =
+                document.getElementById(
+                    "bloco-previa-predicao"
+                );
+
+
+            const botaoExecutar =
+                document.getElementById(
+                    "botao-executar-predicao"
+                );
+
+
+            bloco.classList.remove(
+                "d-none"
+            );
+
+
+            previa.classList.add(
+                "d-none"
+            );
+
+
+            botaoExecutar.disabled =
+                true;
+
+
+            if (!dados.sucesso) {
+
+                let html =
+
+                    '<div class="alert alert-danger">' +
+
+                    "<strong>✗ Base incompatível com o modelo</strong>" +
+
+                    "<br><br>" +
+
+                    dados.mensagem;
+
+
+                if (
+                    dados.colunas_ausentes
+                    &&
+                    dados.colunas_ausentes.length
+                ) {
+
+                    html +=
+
+                        "<hr>" +
+
+                        "<strong>Colunas obrigatórias ausentes:</strong>" +
+
+                        "<ul>";
+
+
+                    dados.colunas_ausentes.forEach(
+                        function (
+                            coluna
+                        ) {
+
+                            html +=
+
+                                "<li>" +
+                                coluna +
+                                "</li>";
+
+                        }
+                    );
+
+
+                    html +=
+                        "</ul>";
+
+                }
+
+
+                if (
+                    dados.valores_ausentes
+                ) {
+
+                    html +=
+
+                        "<hr>" +
+
+                        "<strong>Valores ausentes:</strong>" +
+
+                        "<ul>";
+
+
+                    Object.keys(
+                        dados.valores_ausentes
+                    ).forEach(
+                        function (
+                            coluna
+                        ) {
+
+                            html +=
+
+                                "<li>" +
+                                coluna +
+                                ": " +
+                                dados.valores_ausentes[
+                                    coluna
+                                ] +
+                                " valor(es)</li>";
+
+                        }
+                    );
+
+
+                    html +=
+                        "</ul>";
+
+                }
+
+
+                if (
+                    dados.erros_tipo
+                ) {
+
+                    html +=
+
+                        "<hr>" +
+
+                        "<strong>Valores não numéricos encontrados:</strong>" +
+
+                        "<ul>";
+
+
+                    Object.keys(
+                        dados.erros_tipo
+                    ).forEach(
+                        function (
+                            coluna
+                        ) {
+
+                            html +=
+
+                                "<li>" +
+                                coluna +
+                                " — linhas " +
+                                dados.erros_tipo[
+                                    coluna
+                                ].join(
+                                    ", "
+                                ) +
+                                "</li>";
+
+                        }
+                    );
+
+
+                    html +=
+                        "</ul>";
+
+                }
+
+
+                html +=
+                    "</div>";
+
+
+                bloco.innerHTML =
+                    html;
+
+
+                return;
+
+            }
+
+
+            let html =
+
+                '<div class="alert alert-success">' +
+
+                "<strong>✓ Base compatível com o modelo</strong>" +
+
+                "<br><br>" +
+
+                "Arquivo: " +
+                dados.arquivo +
+
+                "<br>" +
+
+                "Registros encontrados: " +
+                dados.total_registros +
+
+                "<br>" +
+
+                "Todas as variáveis obrigatórias foram encontradas." +
+
+                "</div>";
+
+
+            if (
+                dados.colunas_extras
+                &&
+                dados.colunas_extras.length
+            ) {
+
+                html +=
+
+                    '<div class="alert alert-secondary">' +
+
+                    "<strong>Colunas adicionais:</strong> " +
+
+                    dados.colunas_extras.join(
+                        ", "
+                    ) +
+
+                    "<br><br>" +
+
+                    "Essas colunas serão mantidas no resultado, " +
+
+                    "mas não participarão do cálculo da rede." +
+
+                    "</div>";
+
+            }
+
+
+            if (
+                dados.saida_presente
+            ) {
+
+                html +=
+
+                    '<div class="alert alert-warning">' +
+
+                    "<strong>Atenção:</strong> " +
+
+                    'a coluna de saída "' +
+
+                    dados.nome_saida +
+
+                    '" está presente na nova base. ' +
+
+                    "Ela será ignorada durante a geração da previsão." +
+
+                    "</div>";
+
+            }
+
+
+            if (
+                dados.valores_fora_intervalo
+                &&
+                Object.keys(
+                    dados.valores_fora_intervalo
+                ).length
+            ) {
+
+                html +=
+
+                    '<div class="alert alert-warning">' +
+
+                    "<strong>Valores fora da faixa de treinamento</strong>" +
+
+                    "<br><br>";
+
+
+                Object.keys(
+                    dados.valores_fora_intervalo
+                ).forEach(
+                    function (
+                        coluna
+                    ) {
+
+                        html +=
+
+                            coluna +
+                            ": " +
+                            dados.valores_fora_intervalo[
+                                coluna
+                            ] +
+                            " registro(s)<br>";
+
+                    }
+                );
+
+
+                html +=
+
+                    "<br>Esses registros ainda poderão ser classificados, " +
+
+                    "mas possuem valores fora do intervalo observado " +
+
+                    "durante o treinamento." +
+
+                    "</div>";
+
+            }
+
+
+            bloco.innerHTML =
+                html;
+
+
+            montarTabelaGenerica(
+                "previa-predicao",
+                dados.colunas,
+                dados.previa
+            );
+
+
+            previa.classList.remove(
+                "d-none"
+            );
+
+
+            botaoExecutar.disabled =
+                false;
+
+        }
+
+
+        /* =====================================================
+           EXECUTAR PREDIÇÃO
+        ===================================================== */
+
+        const botaoExecutarPredicao =
+            document.getElementById(
+                "botao-executar-predicao"
+            );
+
+
+        if (botaoExecutarPredicao) {
+
+            botaoExecutarPredicao.addEventListener(
+                "click",
+                async function () {
+
+
+                    this.disabled =
+                        true;
+
+
+                    this.textContent =
+                        "Processando...";
+
+
+                    try {
+
+                        const resposta =
+                            await fetch(
+                                "/executar-predicao",
+                                {
+                                    method:
+                                        "POST"
+                                }
+                            );
+
+
+                        const dados =
+                            await resposta.json();
+
+
+                        if (!dados.sucesso) {
+
+                            alert(
+                                dados.mensagem
+                            );
+
+                            return;
+
+                        }
+
+
+                        document.getElementById(
+                            "predicao-total"
+                        ).textContent =
+                            dados.total;
+
+
+                        document.getElementById(
+                            "predicao-zero"
+                        ).textContent =
+                            dados.quantidade_zero;
+
+
+                        document.getElementById(
+                            "predicao-um"
+                        ).textContent =
+                            dados.quantidade_um;
+
+
+                        montarTabelaGenerica(
+                            "tabela-resultado-predicao",
+                            dados.colunas,
+                            dados.resultados
+                        );
+
+
+                        document
+                            .getElementById(
+                                "resultado-predicao"
+                            )
+                            .classList
+                            .remove(
+                                "d-none"
+                            );
+
+
+                        concluirEtapa(
+                            "wizard-predicao"
+                        );
+
+
+                    }
+
+                    catch (erro) {
+
+                        console.error(
+                            erro
+                        );
+
+
+                        alert(
+                            "Erro ao executar a predição."
+                        );
+
+                    }
+
+                    finally {
+
+                        this.disabled =
+                            false;
+
+
+                        this.textContent =
+                            "Executar Predição";
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           TABELA GENÉRICA
+        ===================================================== */
+
+        function montarTabelaGenerica(
+            id,
+            colunas,
+            registros
+        ) {
+
+            const container =
+                document.getElementById(
+                    id
+                );
+
+
+            if (
+                !container
+                ||
+                !colunas
+                ||
+                !registros
+            ) {
+
+                return;
+
+            }
+
+
+            const tabela =
+                document.createElement(
+                    "table"
+                );
+
+
+            tabela.className =
+                "table table-bordered table-hover align-middle";
+
+
+            const thead =
+                document.createElement(
+                    "thead"
+                );
+
+
+            thead.className =
+                "table-light";
+
+
+            const linhaCabecalho =
+                document.createElement(
+                    "tr"
+                );
+
+
+            colunas.forEach(
+                function (
+                    coluna
+                ) {
+
+                    const th =
+                        document.createElement(
+                            "th"
+                        );
+
+
+                    th.textContent =
+                        coluna;
+
+
+                    linhaCabecalho.appendChild(
+                        th
+                    );
+
+                }
+            );
+
+
+            thead.appendChild(
+                linhaCabecalho
+            );
+
+
+            tabela.appendChild(
+                thead
+            );
+
+
+            const tbody =
+                document.createElement(
+                    "tbody"
+                );
+
+
+            registros.forEach(
+                function (
+                    registro
+                ) {
+
+                    const linha =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    colunas.forEach(
+                        function (
+                            coluna
+                        ) {
+
+                            const td =
+                                document.createElement(
+                                    "td"
+                                );
+
+
+                            let valor =
+                                registro[
+                                    coluna
+                                ];
+
+
+                            if (
+                                valor === null
+                                ||
+                                valor === undefined
+                            ) {
+
+                                valor =
+                                    "";
+
+                            }
+
+
+                            td.textContent =
+                                valor;
+
+
+                            linha.appendChild(
+                                td
+                            );
+
+                        }
+                    );
+
+
+                    tbody.appendChild(
+                        linha
+                    );
+
+                }
+            );
+
+
+            tabela.appendChild(
+                tbody
+            );
+
+
+            container.innerHTML =
+                "";
+
+
+            container.appendChild(
+                tabela
+            );
+
+        }
+
+
+        /* =====================================================
+           BOTÃO DE AVALIAÇÃO APÓS RECARREGAR
+        ===================================================== */
+
+        const botaoIrAvaliacao =
+            document.getElementById(
+                "botao-ir-avaliacao"
+            );
+
+
+        if (
+            botaoIrAvaliacao
+            &&
+            !botaoIrAvaliacao.disabled
+        ) {
+
+            botaoIrAvaliacao.addEventListener(
+                "click",
+                function () {
+
+                    abrirEtapa(
+                        7
+                    );
+
+                }
+            );
+
+        }
+
+    </script>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+</body>
+
+</html>

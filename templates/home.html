@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Laboratório de Machine Learning</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+
+<body class="bg-light">
+
+
+    <!-- ===================================================== -->
+    <!-- MENU PRINCIPAL -->
+    <!-- ===================================================== -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+
+        <div class="container-fluid px-4">
+
+            <!-- MARCA -->
+
+            <a
+                class="navbar-brand fw-bold"
+                href="/home"
+            >
+                🧠 Laboratório ML
+            </a>
+
+
+            <!-- BOTÃO MOBILE -->
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal"
+                aria-expanded="false"
+                aria-label="Abrir menu"
+            >
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+
+            <!-- ITENS DO MENU -->
+
+            <div
+                class="collapse navbar-collapse"
+                id="menuPrincipal"
+            >
+
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                    <!-- INÍCIO -->
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link active"
+                            href="/home"
+                        >
+                            Início
+                        </a>
+
+                    </li>
+
+
+                    <!-- REDES NEURAIS -->
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="/"
+                        >
+                            Redes Neurais
+                        </a>
+
+                    </li>
+
+
+                    <!-- SUPERVISIONADO -->
+
+                    <li class="nav-item">
+
+                        <span
+                            class="nav-link menu-indisponivel"
+                            title="Laboratório em desenvolvimento"
+                        >
+                            Supervisionado
+
+                            <small class="menu-em-breve">
+                                Em breve
+                            </small>
+
+                        </span>
+
+                    </li>
+
+
+                    <!-- NÃO SUPERVISIONADO -->
+
+                    <li class="nav-item">
+
+                        <span
+                            class="nav-link menu-indisponivel"
+                            title="Laboratório em desenvolvimento"
+                        >
+                            Não Supervisionado
+
+                            <small class="menu-em-breve">
+                                Em breve
+                            </small>
+
+                        </span>
+
+                    </li>
+
+
+                    <!-- REFORÇO -->
+
+                    <li class="nav-item">
+
+                        <span
+                            class="nav-link menu-indisponivel"
+                            title="Laboratório em desenvolvimento"
+                        >
+                            Reforço
+
+                            <small class="menu-em-breve">
+                                Em breve
+                            </small>
+
+                        </span>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ===================================================== -->
+    <!-- CONTEÚDO -->
+    <!-- ===================================================== -->
+
+    <main class="container py-5">
+
+
+        <!-- ================================================= -->
+        <!-- APRESENTAÇÃO -->
+        <!-- ================================================= -->
+
+        <section class="text-center mb-5">
+
+            <span
+                class="badge bg-primary-subtle text-primary px-3 py-2 mb-3"
+            >
+                Ambiente de Aprendizagem
+            </span>
+
+
+            <h1 class="display-5 fw-bold">
+
+                Laboratório de
+
+                <span class="text-primary">
+                    Machine Learning
+                </span>
+
+            </h1>
+
+
+            <p
+                class="lead text-muted mx-auto mt-3"
+                style="max-width: 820px;"
+            >
+
+                Explore diferentes formas de aprendizagem
+                de máquina por meio de laboratórios interativos,
+                acompanhando desde a preparação dos dados
+                até o comportamento e os resultados dos algoritmos.
+
+            </p>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- TEXTO INTRODUTÓRIO -->
+        <!-- ================================================= -->
+
+        <section class="mb-5">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="row align-items-center">
+
+                        <div class="col-lg-8">
+
+                            <span class="text-primary fw-semibold">
+                                ESCOLHA UMA ÁREA
+                            </span>
+
+
+                            <h2 class="h3 fw-bold mt-2">
+                                Como você deseja aprender?
+                            </h2>
+
+
+                            <p class="text-muted mb-lg-0">
+
+                                Cada área apresenta uma forma diferente
+                                de ensinar uma máquina a identificar
+                                padrões, tomar decisões ou melhorar
+                                seu comportamento a partir de dados
+                                e experiências.
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-lg-4 mt-4 mt-lg-0">
+
+                            <div class="home-flow">
+
+                                <div>
+                                    Dados
+                                </div>
+
+                                <span>
+                                    →
+                                </span>
+
+                                <div>
+                                    Aprendizado
+                                </div>
+
+                                <span>
+                                    →
+                                </span>
+
+                                <div>
+                                    Resultado
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- LABORATÓRIOS -->
+        <!-- ================================================= -->
+
+        <section>
+
+            <div class="row g-4">
+
+
+                <!-- ========================================= -->
+                <!-- REDES NEURAIS -->
+                <!-- ========================================= -->
+
+                <div class="col-lg-6">
+
+                    <div class="card home-card shadow-sm border-0 h-100">
+
+                        <div class="card-body p-4 p-lg-5">
+
+                            <div
+                                class="d-flex justify-content-between align-items-start gap-3"
+                            >
+
+                                <div class="home-icon">
+                                    🧠
+                                </div>
+
+
+                                <span
+                                    class="badge bg-success-subtle text-success px-3 py-2"
+                                >
+                                    Disponível
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-4">
+
+                                <span
+                                    class="badge bg-primary-subtle text-primary mb-3"
+                                >
+                                    Técnica
+                                </span>
+
+
+                                <h2 class="h3 fw-bold">
+                                    Redes Neurais
+                                </h2>
+
+
+                                <p class="text-muted mt-3">
+
+                                    Explore modelos inspirados
+                                    no funcionamento dos neurônios
+                                    e acompanhe como a rede aprende
+                                    ajustando pesos e bias.
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="home-topics mt-4">
+
+                                <span>
+                                    Perceptron
+                                </span>
+
+                                <span>
+                                    Entradas
+                                </span>
+
+                                <span>
+                                    Pesos
+                                </span>
+
+                                <span>
+                                    Bias
+                                </span>
+
+                                <span>
+                                    Treinamento
+                                </span>
+
+                                <span>
+                                    Predição
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-4">
+
+                                <a
+                                    href="/"
+                                    class="btn btn-primary px-4"
+                                >
+                                    Explorar Redes Neurais →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- APRENDIZADO SUPERVISIONADO -->
+                <!-- ========================================= -->
+
+                <div class="col-lg-6">
+
+                    <div class="card home-card shadow-sm border-0 h-100">
+
+                        <div class="card-body p-4 p-lg-5">
+
+                            <div
+                                class="d-flex justify-content-between align-items-start gap-3"
+                            >
+
+                                <div class="home-icon">
+                                    🎯
+                                </div>
+
+
+                                <span
+                                    class="badge bg-secondary-subtle text-secondary px-3 py-2"
+                                >
+                                    Em breve
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-4">
+
+                                <span
+                                    class="badge bg-success-subtle text-success mb-3"
+                                >
+                                    Paradigma de Aprendizagem
+                                </span>
+
+
+                                <h2 class="h3 fw-bold">
+                                    Aprendizado Supervisionado
+                                </h2>
+
+
+                                <p class="text-muted mt-3">
+
+                                    Aprenda como um algoritmo utiliza
+                                    exemplos que já possuem uma resposta
+                                    conhecida para aprender relações
+                                    entre entradas e saídas.
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="home-topics mt-4">
+
+                                <span>
+                                    Classificação
+                                </span>
+
+                                <span>
+                                    Regressão
+                                </span>
+
+                                <span>
+                                    Treino
+                                </span>
+
+                                <span>
+                                    Teste
+                                </span>
+
+                                <span>
+                                    Métricas
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-4">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary px-4"
+                                    disabled
+                                >
+                                    Laboratório em desenvolvimento
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- NÃO SUPERVISIONADO -->
+                <!-- ========================================= -->
+
+                <div class="col-lg-6">
+
+                    <div class="card home-card shadow-sm border-0 h-100">
+
+                        <div class="card-body p-4 p-lg-5">
+
+                            <div
+                                class="d-flex justify-content-between align-items-start gap-3"
+                            >
+
+                                <div class="home-icon">
+                                    🔍
+                                </div>
+
+
+                                <span
+                                    class="badge bg-secondary-subtle text-secondary px-3 py-2"
+                                >
+                                    Em breve
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-4">
+
+                                <span
+                                    class="badge bg-warning-subtle text-warning-emphasis mb-3"
+                                >
+                                    Paradigma de Aprendizagem
+                                </span>
+
+
+                                <h2 class="h3 fw-bold">
+                                    Aprendizado Não Supervisionado
+                                </h2>
+
+
+                                <p class="text-muted mt-3">
+
+                                    Descubra como os algoritmos
+                                    identificam grupos e padrões
+                                    sem receber previamente
+                                    uma resposta correta.
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="home-topics mt-4">
+
+                                <span>
+                                    K-Means
+                                </span>
+
+                                <span>
+                                    Clustering
+                                </span>
+
+                                <span>
+                                    Grupos
+                                </span>
+
+                                <span>
+                                    Similaridade
+                                </span>
+
+                                <span>
+                                    Padrões
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-4">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary px-4"
+                                    disabled
+                                >
+                                    Laboratório em desenvolvimento
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- APRENDIZADO POR REFORÇO -->
+                <!-- ========================================= -->
+
+                <div class="col-lg-6">
+
+                    <div class="card home-card shadow-sm border-0 h-100">
+
+                        <div class="card-body p-4 p-lg-5">
+
+                            <div
+                                class="d-flex justify-content-between align-items-start gap-3"
+                            >
+
+                                <div class="home-icon">
+                                    🎮
+                                </div>
+
+
+                                <span
+                                    class="badge bg-secondary-subtle text-secondary px-3 py-2"
+                                >
+                                    Em breve
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-4">
+
+                                <span
+                                    class="badge bg-danger-subtle text-danger mb-3"
+                                >
+                                    Paradigma de Aprendizagem
+                                </span>
+
+
+                                <h2 class="h3 fw-bold">
+                                    Aprendizado por Reforço
+                                </h2>
+
+
+                                <p class="text-muted mt-3">
+
+                                    Entenda como um agente aprende
+                                    por tentativa e erro,
+                                    recebendo recompensas ou penalidades
+                                    a partir das decisões tomadas.
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="home-topics mt-4">
+
+                                <span>
+                                    Agente
+                                </span>
+
+                                <span>
+                                    Ambiente
+                                </span>
+
+                                <span>
+                                    Ação
+                                </span>
+
+                                <span>
+                                    Recompensa
+                                </span>
+
+                                <span>
+                                    Q-Learning
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-4">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary px-4"
+                                    disabled
+                                >
+                                    Laboratório em desenvolvimento
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- DIFERENÇAS -->
+        <!-- ================================================= -->
+
+        <section class="mt-5">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="text-center mb-4">
+
+                        <span class="text-primary fw-semibold">
+                            VISÃO GERAL
+                        </span>
+
+
+                        <h2 class="h3 fw-bold mt-2">
+                            Qual a diferença entre eles?
+                        </h2>
+
+
+                        <p class="text-muted">
+
+                            Uma forma simples de entender
+                            os principais paradigmas
+                            de aprendizagem de máquina.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="row g-4">
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-success">
+                                        🎯 Supervisionado
+                                    </h5>
+
+                                    <p class="text-muted">
+
+                                        O algoritmo recebe exemplos
+                                        junto com a resposta correta.
+
+                                    </p>
+
+
+                                    <strong>
+                                        Exemplo
+                                    </strong>
+
+                                    <p class="mb-0">
+
+                                        Cliente →
+                                        compra ou não compra.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-warning">
+                                        🔍 Não Supervisionado
+                                    </h5>
+
+                                    <p class="text-muted">
+
+                                        O algoritmo recebe os dados,
+                                        mas não recebe uma resposta pronta.
+
+                                    </p>
+
+
+                                    <strong>
+                                        Exemplo
+                                    </strong>
+
+                                    <p class="mb-0">
+
+                                        Agrupar clientes
+                                        com características semelhantes.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-danger">
+                                        🎮 Por Reforço
+                                    </h5>
+
+                                    <p class="text-muted">
+
+                                        O agente aprende realizando ações
+                                        e recebendo recompensas
+                                        ou penalidades.
+
+                                    </p>
+
+
+                                    <strong>
+                                        Exemplo
+                                    </strong>
+
+                                    <p class="mb-0">
+
+                                        Encontrar o melhor caminho
+                                        em um ambiente.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert alert-primary mt-4 mb-0">
+
+                        <strong>
+                            E as Redes Neurais?
+                        </strong>
+
+                        <br><br>
+
+                        Redes neurais são uma técnica de Inteligência
+                        Artificial que pode ser utilizada em diferentes
+                        paradigmas de aprendizagem.
+
+                        Neste laboratório elas possuem uma área própria
+                        para que seja possível estudar detalhadamente
+                        o funcionamento de neurônios, pesos,
+                        bias e treinamento.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- COMO FUNCIONARÃO OS LABORATÓRIOS -->
+        <!-- ================================================= -->
+
+        <section class="mt-5">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="text-center mb-5">
+
+                        <span class="text-primary fw-semibold">
+                            METODOLOGIA
+                        </span>
+
+
+                        <h2 class="h3 fw-bold mt-2">
+                            Aprenda experimentando
+                        </h2>
+
+                    </div>
+
+
+                    <div class="row g-4 text-center">
+
+
+                        <div class="col-md-3">
+
+                            <div class="home-step-number">
+                                1
+                            </div>
+
+                            <h5 class="fw-bold mt-3">
+                                Prepare
+                            </h5>
+
+                            <p class="text-muted">
+                                Importe e analise
+                                os dados.
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="home-step-number">
+                                2
+                            </div>
+
+                            <h5 class="fw-bold mt-3">
+                                Configure
+                            </h5>
+
+                            <p class="text-muted">
+                                Defina variáveis
+                                e parâmetros.
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="home-step-number">
+                                3
+                            </div>
+
+                            <h5 class="fw-bold mt-3">
+                                Execute
+                            </h5>
+
+                            <p class="text-muted">
+                                Acompanhe o algoritmo
+                                passo a passo.
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="home-step-number">
+                                4
+                            </div>
+
+                            <h5 class="fw-bold mt-3">
+                                Analise
+                            </h5>
+
+                            <p class="text-muted">
+                                Interprete métricas
+                                e resultados.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- ACESSO AO LABORATÓRIO ATUAL -->
+        <!-- ================================================= -->
+
+        <section class="mt-5">
+
+            <div
+                class="card border-0 shadow-sm bg-primary text-white"
+            >
+
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="row align-items-center">
+
+                        <div class="col-lg-8">
+
+                            <span
+                                class="badge bg-light text-primary mb-3"
+                            >
+                                Laboratório disponível
+                            </span>
+
+
+                            <h2 class="fw-bold text-white">
+                                Comece pelo Perceptron
+                            </h2>
+
+
+                            <p
+                                class="mb-lg-0"
+                                style="color:rgba(255,255,255,.85);"
+                            >
+
+                                Importe uma base de dados,
+                                configure as entradas e a saída,
+                                acompanhe o treinamento da rede neural,
+                                avalie as métricas e realize
+                                novas predições.
+
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="col-lg-4 mt-4 mt-lg-0 text-lg-end"
+                        >
+
+                            <a
+                                href="/"
+                                class="btn btn-light btn-lg px-4"
+                            >
+                                Abrir Perceptron →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- RODAPÉ -->
+        <!-- ================================================= -->
+
+        <footer class="text-center text-muted mt-5 pb-3">
+
+            Laboratório Educacional de Machine Learning
+
+        </footer>
+
+    </main>
+
+
+    <!-- ===================================================== -->
+    <!-- BOOTSTRAP -->
+    <!-- ===================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+</body>
+
+</html>
