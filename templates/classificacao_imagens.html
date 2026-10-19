@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Classificação de Imagens | Laboratório ML</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root{--blue:#0d6efd;--ink:#172033;--muted:#667085;--line:#e5e7eb;--soft:#f7f9fc}
+body{background:#f6f8fb;color:var(--ink)} .navbar{box-shadow:0 2px 14px #10182818}
+.hero{max-width:1500px;margin:auto;padding:38px 28px 8px}.hero h1{font-weight:800}.hero p{color:var(--muted)}
+.wizard-wrap{overflow-x:auto;padding:14px 4px 24px}.wizard{display:flex;min-width:1040px;align-items:flex-start}
+.wstep{flex:1;text-align:center;position:relative;color:#98a2b3;font-size:.82rem;font-weight:600}
+.wstep:before{content:"";position:absolute;top:18px;left:-50%;width:100%;height:2px;background:#dce2ea;z-index:0}.wstep:first-child:before{display:none}
+.dot{position:relative;z-index:1;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;background:#e9edf3;color:#667085}
+.wstep.on .dot{background:var(--blue);color:#fff}.wstep.on span{color:var(--blue)}.wstep.done .dot{background:#198754;color:#fff}.wstep.done:before,.wstep.on:before{background:#86b7fe}
+.wizard-nav-form{margin:0}.wizard-nav-btn{border:0;background:transparent;width:100%;padding:0;color:inherit;font:inherit}.wizard-nav-btn:hover span{text-decoration:underline}
+.shell{max-width:1450px;margin:0 auto;padding:0 28px 50px}.cardx{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 8px 28px #1018280a}
+.badge-stage{display:inline-block;background:#eaf2ff;color:#0d6efd;border-radius:999px;padding:6px 12px;font-size:.78rem;font-weight:800;margin-bottom:10px}
+.info{background:#f0f6ff;border-left:4px solid var(--blue);padding:14px 16px;border-radius:10px}.metric{border:1px solid var(--line);border-radius:15px;padding:20px;height:100%}.metric .num{font-size:1.7rem;font-weight:800}
+.thumb{width:100%;height:150px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}.mini-img{width:62px;height:62px;object-fit:cover;border-radius:10px}
+.terminal{background:#101828;color:#d1e7dd;border-radius:14px;padding:20px;font-family:ui-monospace,monospace;min-height:180px;white-space:pre-wrap}
+.model-card{border:2px solid #e5e7eb;border-radius:16px;padding:20px;height:100%;cursor:pointer}.model-card:has(input:checked){border-color:var(--blue);background:#f5f9ff}
+.table td,.table th{vertical-align:middle}.conf td{min-width:85px;text-align:center}.conf .v{font-size:1.25rem;font-weight:800}
+@media(max-width:768px){.hero,.shell{padding-left:14px;padding-right:14px}.cardx{padding:18px}}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<div class="container-fluid px-4">
+<a class="navbar-brand fw-bold" href="/home">🧠 Laboratório ML</a>
+<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu"><span class="navbar-toggler-icon"></span></button>
+<div class="collapse navbar-collapse" id="menu"><ul class="navbar-nav ms-auto">
+<li class="nav-item"><a class="nav-link" href="/home">Início</a></li>
+<li class="nav-item"><a class="nav-link" href="/">Redes Neurais</a></li>
+<li class="nav-item dropdown"><a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">Supervisionado</a>
+<ul class="dropdown-menu">
+<li><a class="dropdown-item" href="/supervisionado/classificacao">Classificação</a></li>
+<li><a class="dropdown-item" href="/supervisionado/regressao">Regressão</a></li>
+<li><a class="dropdown-item active" href="/supervisionado/classificacao-imagens">Classificação de Imagens</a></li>
+</ul></li>
+<li class="nav-item"><span class="nav-link disabled">Não Supervisionado <small>Em breve</small></span></li>
+<li class="nav-item"><span class="nav-link disabled">Reforço <small>Em breve</small></span></li>
+</ul></div></div></nav>
+
+<div class="hero">
+<div class="text-center"><h1>Aprendizado Supervisionado — Classificação de Imagens</h1>
+<p>Da imagem bruta aos pixels, treinamento, avaliação e classificação de novas imagens.</p></div>
+<form method="post" class="text-end"><input type="hidden" name="acao" value="resetar"><button class="btn btn-outline-danger btn-sm">↻ Começar de Novo</button></form>
+<div class="wizard-wrap"><div class="wizard">
+{% for n,nome in [(1,'Importação'),(2,'Visualização'),(3,'Preparação'),(4,'Classes'),(5,'Treino/Teste'),(6,'Modelo'),(7,'Treinamento'),(8,'Avaliação'),(9,'Predição'),(10,'Comparação')] %}
+<div class="wstep {% if etapa_atual==n %}on{% elif n <= etapa_maxima %}done{% endif %}">
+{% if n <= etapa_maxima and n != etapa_atual %}<form method="post" class="wizard-nav-form"><input type="hidden" name="acao" value="navegar_etapa"><input type="hidden" name="etapa_destino" value="{{n}}"><button class="wizard-nav-btn"><div class="dot"><i class="bi bi-check-lg"></i></div><span>{{nome}}</span></button></form>
+{% else %}<div class="dot">{{n}}</div><span>{{nome}}</span>{% endif %}
+</div>{% endfor %}
+</div></div></div>
+
+<main class="shell">
+{% if erro %}<div class="alert alert-danger"><b>Erro:</b> {{erro}}</div>{% endif %}
+{% if mensagem %}<div class="alert alert-success"><b>✓ Operação concluída</b><br>{{mensagem}}</div>{% endif %}
+
+{% if etapa_atual==1 %}
+<section class="cardx"><span class="badge-stage">Etapa 1</span><h3 class="fw-bold">Importação das Imagens</h3>
+<p class="text-muted">Envie um arquivo ZIP. Cada pasta representa uma classe que o modelo deverá aprender.</p>
+<div class="info mb-4"><b>Estrutura esperada</b><br><code>base.zip → gatos/ → gato01.jpg ... &nbsp;&nbsp; cachorros/ → cachorro01.jpg ...</code><br><small>São aceitas imagens JPG, JPEG, PNG, BMP e WEBP.</small></div>
+<form method="post" enctype="multipart/form-data"><input type="hidden" name="acao" value="importar"><input class="form-control form-control-lg mb-3" type="file" name="arquivo" accept=".zip" required><button class="btn btn-primary btn-lg">Importar Base de Imagens</button></form>
+</section>
+{% endif %}
+
+{% if etapa_atual==2 %}
+<section class="cardx"><span class="badge-stage">Etapa 2</span><h3 class="fw-bold">Visualização da Base</h3>
+<p class="text-muted">Antes de treinar, observe quantas imagens e classes foram encontradas.</p>
+<div class="row g-3 my-3"><div class="col-md-4"><div class="metric"><small>Arquivo</small><div class="fw-bold mt-1">{{nome_arquivo}}</div></div></div><div class="col-md-4"><div class="metric"><small>Imagens válidas</small><div class="num">{{total_imagens}}</div></div></div><div class="col-md-4"><div class="metric"><small>Classes</small><div class="num">{{classes|length}}</div></div></div></div>
+<div class="row g-3">{% for item in amostras %}<div class="col-6 col-md-3"><img class="thumb" src="{{item.uri}}"><div class="fw-bold mt-2">{{item.classe}}</div><small class="text-muted">{{item.largura}}×{{item.altura}} · {{item.modo}}</small></div>{% endfor %}</div>
+<h5 class="fw-bold mt-4">Distribuição por classe</h5><div class="table-responsive"><table class="table"><thead><tr><th>Classe</th><th>Imagens</th></tr></thead><tbody>{% for c,q in contagem_classes.items() %}<tr><td>{{c}}</td><td>{{q}}</td></tr>{% endfor %}</tbody></table></div>
+<form method="post" class="text-end"><input type="hidden" name="acao" value="navegar_etapa"><input type="hidden" name="etapa_destino" value="3"><button class="btn btn-primary" {% if etapa_maxima < 3 %}formaction="" name="acao" value="preparar" style="display:none"{% endif %}>Continuar</button></form>
+{% if etapa_maxima < 3 %}<form method="post" class="text-end"><input type="hidden" name="acao" value="preparar"><input type="hidden" name="largura" value="96"><input type="hidden" name="altura" value="96"><button class="btn btn-primary">Ir para Preparação</button></form>{% endif %}
+</section>
+{% endif %}
+
+{% if etapa_atual==3 %}
+<section class="cardx"><span class="badge-stage">Etapa 3</span><h3 class="fw-bold">Preparação das Imagens</h3>
+<p class="text-muted">Todas as imagens precisam ter o mesmo formato para entrar na rede neural.</p>
+<div class="row g-3 my-4"><div class="col-md-4"><div class="metric"><b>1. RGB</b><p class="mb-0 text-muted">Padroniza todas as imagens para 3 canais de cor.</p></div></div><div class="col-md-4"><div class="metric"><b>2. Redimensionamento</b><p class="mb-0 text-muted">Transforma imagens de tamanhos diferentes em uma dimensão única.</p></div></div><div class="col-md-4"><div class="metric"><b>3. Normalização</b><p class="mb-0 text-muted">Converte pixels de 0–255 para valores entre 0 e 1.</p></div></div></div>
+<form method="post"><input type="hidden" name="acao" value="preparar"><div class="row g-3"><div class="col-md-3"><label class="form-label">Largura</label><input class="form-control" type="number" name="largura" value="{{largura}}" min="32" max="256"></div><div class="col-md-3"><label class="form-label">Altura</label><input class="form-control" type="number" name="altura" value="{{altura}}" min="32" max="256"></div></div><button class="btn btn-primary mt-4">Preparar Imagens</button></form>
+</section>
+{% endif %}
+
+{% if etapa_atual==4 %}
+<section class="cardx"><span class="badge-stage">Etapa 4</span><h3 class="fw-bold">Classes</h3><p class="text-muted">As pastas do ZIP funcionam como os rótulos Y do aprendizado supervisionado.</p>
+<div class="info mb-4"><b>X = imagem</b> (matriz de pixels) &nbsp; → &nbsp; <b>Y = classe</b> (rótulo esperado).</div>
+<div class="row g-3">{% for c,q in contagem_classes.items() %}<div class="col-md-4"><div class="metric"><span class="badge text-bg-primary mb-2">Classe {{loop.index-1}}</span><h5>{{c}}</h5><small>{{q}} imagens</small></div></div>{% endfor %}</div>
+<form method="post" class="mt-4"><input type="hidden" name="acao" value="confirmar_classes"><button class="btn btn-primary">Confirmar Classes</button></form></section>
+{% endif %}
+
+{% if etapa_atual==5 %}
+<section class="cardx"><span class="badge-stage">Etapa 5</span><h3 class="fw-bold">Treino e Teste</h3><p class="text-muted">Uma parte ensina o modelo; a outra mede como ele reage a imagens que não viu durante o treinamento.</p>
+<form method="post"><input type="hidden" name="acao" value="dividir"><label class="form-label fw-bold">Percentual para treinamento</label><select class="form-select" name="percentual_treino" style="max-width:300px"><option value="70">70% treino / 30% teste</option><option value="80" selected>80% treino / 20% teste</option><option value="90">90% treino / 10% teste</option></select><button class="btn btn-primary mt-4">Dividir Base</button></form>
+{% if divisao_concluida %}<div class="row g-3 mt-3"><div class="col-md-6"><div class="metric"><small>Treino</small><div class="num">{{qtd_treino}}</div></div></div><div class="col-md-6"><div class="metric"><small>Teste</small><div class="num">{{qtd_teste}}</div></div></div>{% endif %}</section>
+{% endif %}
+
+{% if etapa_atual==6 %}
+<section class="cardx"><span class="badge-stage">Etapa 6</span><h3 class="fw-bold">Escolha do Modelo</h3><p class="text-muted">Compare uma rede que trata pixels como uma sequência com uma CNN, projetada para reconhecer padrões espaciais.</p>
+<form method="post"><input type="hidden" name="acao" value="selecionar_modelo"><div class="row g-3">
+<div class="col-md-6"><label class="model-card"><input type="radio" name="modelo_tipo" value="densa" class="form-check-input me-2"><b>Rede Neural Densa</b><p class="text-muted mt-2 mb-1">Achata a imagem e conecta os pixels às camadas densas.</p><small><b>Vantagem:</b> simples para demonstrar.<br><b>Atenção:</b> perde a organização espacial da imagem.</small></label></div>
+<div class="col-md-6"><label class="model-card"><input type="radio" name="modelo_tipo" value="cnn" class="form-check-input me-2" checked><b>CNN — Rede Neural Convolucional</b><p class="text-muted mt-2 mb-1">Usa filtros para detectar bordas, formas, texturas e padrões.</p><small><b>Vantagem:</b> mais apropriada para imagens.<br><b>Atenção:</b> exige mais processamento.</small></label></div>
+</div><button class="btn btn-primary mt-4">Confirmar Modelo</button></form></section>
+{% endif %}
+
+{% if etapa_atual==7 %}
+<section class="cardx"><span class="badge-stage">Etapa 7</span><h3 class="fw-bold">Treinamento</h3>
+<div class="row g-3 my-3"><div class="col-md-4"><div class="metric"><small>Modelo</small><h5>{{'CNN' if modelo_tipo=='cnn' else 'Rede Neural Densa'}}</h5></div></div><div class="col-md-4"><div class="metric"><small>Imagens de treino</small><div class="num">{{qtd_treino}}</div></div></div><div class="col-md-4"><div class="metric"><small>Imagens de teste</small><div class="num">{{qtd_teste}}</div></div></div></div>
+<form method="post" id="treino"><input type="hidden" name="acao" value="treinar"><label class="form-label fw-bold">Épocas</label><input class="form-control" style="max-width:180px" type="number" name="epocas" value="8" min="1" max="30"><button id="btnTreinar" class="btn btn-primary btn-lg mt-3" type="submit">▶ Treinar Modelo</button></form>
+<div id="progressoTreinoBox" class="mt-4 d-none"><div class="d-flex justify-content-between mb-1"><small class="fw-bold">Progresso do treinamento</small><small id="progressoTreinoTexto">0%</small></div><div class="progress" style="height:10px"><div id="progressoTreino" class="progress-bar" style="width:0%"></div></div></div>
+<div id="terminalTreino" class="terminal mt-4">{% if historico %}$ Treinamento concluído.
+{% for loss in historico.loss %}$ Época {{loop.index}} — loss={{"%.4f"|format(loss)}}{% if historico.accuracy %} — accuracy={{"%.2f"|format(historico.accuracy[loop.index0]*100)}}%{% endif %}{% if historico.val_loss %} — val_loss={{"%.4f"|format(historico.val_loss[loop.index0])}}{% endif %}{% if historico.val_accuracy %} — val_accuracy={{"%.2f"|format(historico.val_accuracy[loop.index0]*100)}}%{% endif %}
+{% endfor %}$ Modelo pronto para avaliação.{% else %}$ Modelo configurado e pronto para treinamento.
+$ Imagens: {{largura}}×{{altura}} RGB
+$ Pixels normalizados: 0–1
+$ Clique em “Treinar Modelo” para iniciar.{% endif %}</div>
+<button id="btnAvaliacaoDepoisTreino" type="button" class="btn btn-success btn-lg mt-3 d-none">Ir para Avaliação →</button></section>
+{% endif %}
+
+{% if etapa_atual==8 %}
+<section class="cardx"><span class="badge-stage">Etapa 8</span><h3 class="fw-bold">Avaliação do Modelo</h3><p class="text-muted">As métricas são calculadas sobre imagens que ficaram fora do treinamento.</p>
+{% if not avaliacao_concluida %}<form method="post"><input type="hidden" name="acao" value="avaliar"><button class="btn btn-primary btn-lg">Avaliar Modelo</button></form>{% else %}
+<div class="row g-3 my-4">{% for rotulo,valor in [('Acurácia',avaliacao.acuracia),('Precisão',avaliacao.precisao),('Recall',avaliacao.recall),('F1 Score',avaliacao.f1)] %}<div class="col-6 col-lg-3"><div class="metric"><small>{{rotulo}}</small><div class="num">{{valor}}%</div></div></div>{% endfor %}<div class="col-md-3"><div class="metric"><small>Support</small><div class="num">{{avaliacao.support}}</div></div></div></div>
+<h5 class="fw-bold">Matriz de Confusão</h5><div class="table-responsive"><table class="table table-bordered conf"><thead><tr><th>Real ↓ / Prevista →</th>{% for c in avaliacao.classes %}<th>{{c}}</th>{% endfor %}</tr></thead><tbody>{% for linha in avaliacao.matriz %}<tr><th>{{avaliacao.classes[loop.index0]}}</th>{% for v in linha %}<td class="v">{{v}}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+<h5 class="fw-bold mt-4">Resultado por imagem</h5><div class="table-responsive"><table class="table"><thead><tr><th>Imagem</th><th>Arquivo</th><th>Real</th><th>Prevista</th><th>Confiança</th><th>Resultado</th></tr></thead><tbody>{% for r in avaliacao.resultados %}<tr><td><img class="mini-img" src="{{r.imagem}}"></td><td>{{r.arquivo}}</td><td>{{r.real}}</td><td>{{r.previsto}}</td><td>{{r.confianca}}%</td><td><span class="badge {% if r.resultado=='Acerto' %}text-bg-success{% else %}text-bg-danger{% endif %}">{{r.resultado}}</span></td></tr>{% endfor %}</tbody></table></div>{% endif %}</section>
+{% endif %}
+
+{% if etapa_atual==9 %}
+<section class="cardx"><span class="badge-stage">Etapa 9</span><h3 class="fw-bold">Predição de Nova Imagem</h3><p class="text-muted">Envie uma imagem que não participou do treinamento.</p>
+<form method="post" enctype="multipart/form-data"><input type="hidden" name="acao" value="predizer"><input class="form-control form-control-lg" type="file" name="imagem_predicao" accept="image/*" required><button class="btn btn-primary btn-lg mt-3">Classificar Imagem</button></form>
+{% if predicao_concluida %}<div class="row g-4 mt-3"><div class="col-md-5"><img class="img-fluid rounded-4 border" src="{{predicao.imagem}}"></div><div class="col-md-7"><div class="metric"><small>Classe prevista</small><div class="num">{{predicao.classe}}</div><p class="mt-2">Confiança: <b>{{predicao.confianca}}%</b></p>{% for p in predicao.probabilidades %}<div class="d-flex justify-content-between border-top py-2"><span>{{p.classe}}</span><b>{{p.valor}}%</b></div>{% endfor %}</div></div></div>{% endif %}</section>
+{% endif %}
+
+{% if etapa_atual==10 %}
+<section class="cardx"><span class="badge-stage">Etapa 10</span><h3 class="fw-bold">Comparação dos Modelos</h3><p class="text-muted">Treine as duas arquiteturas nas mesmas imagens e compare suas métricas. O objetivo é observar diferenças, não escolher automaticamente um “vencedor”.</p>
+{% if not comparacao_concluida %}<form method="post"><input type="hidden" name="acao" value="comparar"><button class="btn btn-primary btn-lg">Comparar Modelos</button></form>{% else %}<div class="table-responsive"><table class="table mt-3"><thead><tr><th>Modelo</th><th>Acurácia</th><th>Precisão</th><th>Recall</th><th>F1</th></tr></thead><tbody>{% for r in comparacao %}<tr><td class="fw-bold">{{r.modelo}}</td><td>{{r.acuracia}}%</td><td>{{r.precisao}}%</td><td>{{r.recall}}%</td><td>{{r.f1}}%</td></tr>{% endfor %}</tbody></table></div>{% endif %}</section>
+{% endif %}
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{% if etapa_atual==7 %}
+<script>
+(() => {
+  const form = document.getElementById('treino');
+  const terminal = document.getElementById('terminalTreino');
+  const botao = document.getElementById('btnTreinar');
+  const box = document.getElementById('progressoTreinoBox');
+  const barra = document.getElementById('progressoTreino');
+  const texto = document.getElementById('progressoTreinoTexto');
+  const btnAvaliacao = document.getElementById('btnAvaliacaoDepoisTreino');
+  if (!form || !terminal) return;
+
+  const escrever = (linha) => {
+    terminal.textContent += (terminal.textContent ? '\n' : '') + linha;
+    terminal.scrollTop = terminal.scrollHeight;
+  };
+  const progresso = (valor) => {
+    const p = Math.max(0, Math.min(100, Number(valor || 0)));
+    barra.style.width = p + '%';
+    texto.textContent = p + '%';
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    terminal.textContent = '';
+    box.classList.remove('d-none');
+    btnAvaliacao.classList.add('d-none');
+    progresso(0);
+    botao.disabled = true;
+    botao.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Treinando...';
+
+    try {
+      const resposta = await fetch('/supervisionado/classificacao-imagens/treinar-stream', {
+        method: 'POST', body: new FormData(form),
+        headers: {'X-Requested-With': 'XMLHttpRequest'}
+      });
+      if (!resposta.ok || !resposta.body) throw new Error('Não foi possível iniciar o treinamento.');
+
+      const leitor = resposta.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let buffer = '';
+      while (true) {
+        const {value, done} = await leitor.read();
+        if (done) break;
+        buffer += decoder.decode(value, {stream:true});
+        const blocos = buffer.split('\n\n');
+        buffer = blocos.pop();
+        for (const bloco of blocos) {
+          const linha = bloco.split('\n').find(x => x.startsWith('data: '));
+          if (!linha) continue;
+          const dado = JSON.parse(linha.slice(6));
+          if (dado.mensagem) escrever(dado.mensagem);
+          if (dado.progresso !== undefined) progresso(dado.progresso);
+          if (dado.tipo === 'concluido') {
+            botao.innerHTML = '✓ Treinamento concluído';
+            btnAvaliacao.classList.remove('d-none');
+          }
+          if (dado.tipo === 'erro') throw new Error(dado.mensagem);
+        }
+      }
+    } catch (erro) {
+      escrever('$ ' + erro.message);
+      botao.disabled = false;
+      botao.textContent = '▶ Tentar Novamente';
+      return;
+    }
+    botao.disabled = true;
+  });
+
+  btnAvaliacao.addEventListener('click', () => {
+    const f = document.createElement('form');
+    f.method = 'post';
+    f.innerHTML = '<input type="hidden" name="acao" value="navegar_etapa"><input type="hidden" name="etapa_destino" value="8">';
+    document.body.appendChild(f); f.submit();
+  });
+})();
+</script>
+{% endif %}
+
+</body></html>

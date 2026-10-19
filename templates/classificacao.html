@@ -1,0 +1,4410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Laboratório de Classificação</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+<style>
+:root{--lab-blue:#0d6efd;--lab-dark:#101828;--lab-muted:#667085;--lab-border:#e4e7ec;--lab-soft:#f8fafc;--lab-green:#12b76a;--lab-red:#f04438;--lab-yellow:#f79009}
+body{background:#f7f9fc;color:#101828}.wizard-wrapper{overflow-x:auto;padding-bottom:6px}.wizard{min-width:980px}.wizard-content>.card{border-radius:20px!important}.metric-card{background:#fff;border:1px solid var(--lab-border);border-radius:14px;padding:18px;height:100%;box-shadow:0 4px 14px rgba(16,24,40,.04)}.metric-card span{display:block;color:var(--lab-muted);font-size:.82rem;margin-bottom:5px}.metric-card strong{font-size:1.65rem}.info-box,.clean-box{border:1px solid var(--lab-border);border-radius:14px;padding:18px;background:#fff}.clean-box.before{background:#fff8f6}.clean-box.after{background:#f2fbf6}
+.lab-intro{background:linear-gradient(135deg,#f8fbff,#eef5ff);border:1px solid #dbe9ff;border-radius:17px;padding:16px 18px}.lab-intro-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#fff;border:1px solid #dbe9ff;font-size:1.2rem;flex:0 0 40px}.lab-concept-card,.lab-upload-card,.lab-example-card,.lab-mini-card{background:#fff;border:1px solid var(--lab-border);border-radius:14px;padding:15px;height:100%;box-shadow:0 4px 14px rgba(16,24,40,.035);transition:.18s ease}.lab-concept-card:hover,.lab-mini-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,24,40,.07)}.lab-card-title{display:flex;align-items:center;gap:8px;margin-bottom:8px}.lab-card-title>span{font-size:1.15rem}.lab-concept-card h5,.lab-mini-card h5{font-size:1rem;margin:0}.lab-concept-card p,.lab-mini-card p{font-size:.84rem;line-height:1.45;color:var(--lab-muted);margin-bottom:0}.lab-flow{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:10px}.lab-flow div{flex:1;text-align:center;padding:8px 4px;border-radius:10px;background:#f8fafc}.lab-flow span,.lab-flow strong,.lab-flow small{display:block}.lab-flow span{font-size:1.2rem}.lab-flow strong{font-size:.68rem}.lab-flow small{font-size:.62rem;color:var(--lab-muted)}.lab-flow b{color:#98a2b3}.lab-note{background:#eef7ff;border:1px solid #dbeafe;border-radius:11px;padding:10px;font-size:.8rem}.lab-dropzone{display:block;border:2px dashed #b9c7dd;border-radius:14px;padding:20px;text-align:center;background:#fbfdff;cursor:pointer}.lab-dropzone:hover{border-color:var(--lab-blue);background:#f5f9ff}.lab-upload-cloud{font-size:1.8rem}.lab-step-guide{margin:18px 0 22px}.lab-step-guide .lab-mini-card{padding:13px 14px}.lab-step-guide .lab-mini-card .num{width:28px;height:28px;border-radius:8px;background:#eef4ff;color:var(--lab-blue);display:inline-flex;align-items:center;justify-content:center;font-weight:700;margin-bottom:8px}.lab-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid #d0d5dd;border-radius:999px;padding:5px 9px;font-size:.76rem;background:#fff}.lab-formula{font-family:Consolas,monospace;background:#f8fafc;border:1px solid var(--lab-border);border-radius:10px;padding:10px;text-align:center}.lab-metric-card{background:#fff;border:1px solid var(--lab-border);border-radius:15px;padding:18px;height:100%;box-shadow:0 5px 18px rgba(16,24,40,.045)}.lab-metric-card .value{font-size:2rem;font-weight:800;line-height:1.1}.lab-metric-card .desc{font-size:.78rem;color:var(--lab-muted);margin-top:6px}.lab-metric-card .why{font-size:.72rem;color:var(--lab-blue);margin-top:8px}.lab-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid var(--lab-border);border-radius:12px;padding:10px 12px}.lab-toolbar .form-control{max-width:280px}.lab-pagination{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.lab-page-btn{border:1px solid #d0d5dd;background:#fff;border-radius:8px;padding:5px 9px;font-size:.8rem}.lab-page-btn.active{background:var(--lab-blue);color:#fff;border-color:var(--lab-blue)}.lab-result-badge{display:inline-block;border-radius:999px;padding:4px 9px;font-size:.74rem;font-weight:700}.lab-result-badge.ok{background:#ecfdf3;color:#027a48}.lab-result-badge.err{background:#fef3f2;color:#b42318}.lab-class-badge{display:inline-block;border-radius:999px;padding:4px 9px;font-size:.74rem;font-weight:700;background:#eef4ff;color:#175cd3}.lab-toggle-intro{white-space:nowrap}@media(max-width:767px){.lab-intro{padding:14px}.lab-toolbar{align-items:stretch}.lab-toolbar .form-control{max-width:none;width:100%}}
+</style>
+
+</head>
+
+
+<body>
+
+    <!-- ===================================================== -->
+    <!-- MENU PRINCIPAL -->
+    <!-- ===================================================== -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+
+        <div class="container-fluid px-4">
+
+            <a
+                class="navbar-brand fw-bold"
+                href="/home"
+            >
+                🧠 Laboratório ML
+            </a>
+
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal"
+                aria-expanded="false"
+                aria-label="Abrir menu"
+            >
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+
+            <div
+                class="collapse navbar-collapse"
+                id="menuPrincipal"
+            >
+
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="/home"
+                        >
+                            Início
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="/"
+                        >
+                            Redes Neurais
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item dropdown">
+
+                        <a
+                            class="nav-link dropdown-toggle active"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            Supervisionado
+                        </a>
+
+
+                        <ul class="dropdown-menu">
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item active"
+                                    href="/supervisionado/classificacao"
+                                >
+                                    Classificação
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a class="dropdown-item" href="/supervisionado/regressao">Regressão</a>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <span
+                            class="nav-link menu-indisponivel"
+                            title="Laboratório em desenvolvimento"
+                        >
+                            Não Supervisionado
+
+                            <small class="menu-em-breve">
+                                Em breve
+                            </small>
+
+                        </span>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <span
+                            class="nav-link menu-indisponivel"
+                            title="Laboratório em desenvolvimento"
+                        >
+                            Reforço
+
+                            <small class="menu-em-breve">
+                                Em breve
+                            </small>
+
+                        </span>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <main class="container-fluid px-4 py-5">
+
+        <!-- ================================================= -->
+        <!-- TÍTULO -->
+        <!-- ================================================= -->
+
+        <div class="text-center mb-5">
+
+            <h1 class="fw-bold">
+                Aprendizado Supervisionado — Classificação
+            </h1>
+
+            <p class="text-muted">
+                Da importação dos dados à preparação,
+                treinamento, avaliação, predição e comparação.
+            </p>
+
+        </div>
+
+
+        <div class="d-flex justify-content-center mb-4">
+            <form method="POST" action="/supervisionado/classificacao/resetar"
+                  onsubmit="return confirm('Deseja realmente começar de novo? Todos os dados e resultados desta execução serão apagados.');">
+                <button type="submit" class="btn btn-outline-danger">
+                    ↻ Começar de novo
+                </button>
+            </form>
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- MENSAGENS -->
+        <!-- ================================================= -->
+
+        {% if erro %}
+
+        <div class="alert alert-danger mb-4">
+
+            <strong>
+                Erro
+            </strong>
+
+            <br>
+
+            {{ erro }}
+
+        </div>
+
+        {% endif %}
+
+
+        {% if mensagem %}
+
+        <div class="alert alert-success mb-4">
+
+            <strong>
+                ✓ Operação concluída
+            </strong>
+
+            <br>
+
+            {{ mensagem }}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ================================================= -->
+        <!-- WIZARD -->
+        <!-- ================================================= -->
+
+        <div class="wizard-wrapper mb-5">
+
+            <div class="wizard">
+
+
+                <!-- PASSO 1 -->
+
+                <button
+                    type="button"
+                    class="wizard-step {% if nome_arquivo %}completed{% else %}active{% endif %}"
+                    data-step="1"
+                >
+
+                    <span class="wizard-number">
+
+                        {% if nome_arquivo %}
+                            ✓
+                        {% else %}
+                            1
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Importação
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 2 -->
+
+                <button
+                    type="button"
+                    class="wizard-step {% if nome_arquivo %}completed{% else %}locked{% endif %}"
+                    data-step="2"
+                    {% if not nome_arquivo %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if nome_arquivo %}
+                            ✓
+                        {% else %}
+                            2
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Visualização
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 3 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if preparacao_concluida %}
+                        completed
+                    {% elif not nome_arquivo %}
+                        locked
+                    {% endif %}"
+                    data-step="3"
+                    {% if not nome_arquivo %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if preparacao_concluida %}
+                            ✓
+                        {% else %}
+                            3
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Preparação
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 4 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if variaveis_confirmadas %}
+                        completed
+                    {% elif not preparacao_concluida %}
+                        locked
+                    {% endif %}"
+                    data-step="4"
+                    {% if not preparacao_concluida %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if variaveis_confirmadas %}
+                            ✓
+                        {% else %}
+                            4
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Variáveis
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 5 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if divisao_concluida %}
+                        completed
+                    {% elif not variaveis_confirmadas %}
+                        locked
+                    {% endif %}"
+                    data-step="5"
+                    {% if not variaveis_confirmadas %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if divisao_concluida %}
+                            ✓
+                        {% else %}
+                            5
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Treino/Teste
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 6 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if algoritmo_selecionado %}
+                        completed
+                    {% elif not divisao_concluida %}
+                        locked
+                    {% endif %}"
+                    data-step="6"
+                    {% if not divisao_concluida %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if algoritmo_selecionado %}
+                            ✓
+                        {% else %}
+                            6
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Algoritmo
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 7 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if modelo_treinado %}
+                        completed
+                    {% elif not algoritmo_selecionado %}
+                        locked
+                    {% endif %}"
+                    data-step="7"
+                    {% if not algoritmo_selecionado %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if modelo_treinado %}
+                            ✓
+                        {% else %}
+                            7
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Treinamento
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 8 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if avaliacao_concluida %}
+                        completed
+                    {% elif not modelo_treinado %}
+                        locked
+                    {% endif %}"
+                    data-step="8"
+                    {% if not modelo_treinado %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if avaliacao_concluida %}
+                            ✓
+                        {% else %}
+                            8
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Avaliação
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 9 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if predicao_concluida %}
+                        completed
+                    {% elif not avaliacao_concluida %}
+                        locked
+                    {% endif %}"
+                    data-step="9"
+                    {% if not avaliacao_concluida %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if predicao_concluida %}
+                            ✓
+                        {% else %}
+                            9
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Predição
+                    </span>
+
+                </button>
+
+
+                <!-- PASSO 10 -->
+
+                <button
+                    type="button"
+                    class="wizard-step
+                    {% if comparacao_concluida %}
+                        completed
+                    {% elif not avaliacao_concluida %}
+                        locked
+                    {% endif %}"
+                    data-step="10"
+                    {% if not avaliacao_concluida %}disabled{% endif %}
+                >
+
+                    <span class="wizard-number">
+
+                        {% if comparacao_concluida %}
+                            ✓
+                        {% else %}
+                            10
+                        {% endif %}
+
+                    </span>
+
+                    <span class="wizard-label">
+                        Comparação
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 1 -->
+        <!-- IMPORTAÇÃO -->
+        <!-- ================================================= -->
+        <section id="step-1" class="wizard-content">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="lab-intro mb-4">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div class="d-flex gap-3 align-items-start">
+                                <div class="lab-intro-icon">🎯</div>
+                                <div><h3 class="fw-bold mb-1">Aprendizado Supervisionado — Classificação</h3><p class="text-muted mb-0">Aprenda com exemplos conhecidos para classificar novos registros.</p></div>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm lab-toggle-intro" type="button" data-bs-toggle="collapse" data-bs-target="#intro-supervisionado">Ocultar explicação</button>
+                        </div>
+                        <div class="collapse show" id="intro-supervisionado">
+                            <div class="row g-3">
+                                <div class="col-xl-4"><div class="lab-concept-card"><div class="lab-card-title"><span>🧩</span><h5 class="fw-bold">O que é supervisionado?</h5></div><p>O modelo aprende a relação entre <strong>entradas (X)</strong> e uma <strong>saída conhecida (Y)</strong> usando exemplos já classificados.</p><div class="lab-flow"><div><span>📊</span><strong>Entradas</strong><small>X1, X2...</small></div><b>→</b><div><span>⚙️</span><strong>Modelo</strong><small>aprende padrões</small></div><b>→</b><div><span>🏷️</span><strong>Classe</strong><small>Y = 0 ou 1</small></div></div></div></div>
+                                <div class="col-xl-4"><div class="lab-concept-card"><div class="lab-card-title"><span>🔎</span><h5 class="fw-bold">O que é classificação?</h5></div><p>É usada quando queremos prever uma <strong>categoria</strong>. Exemplo: em risco de crédito, classificar um cliente como <strong>0 = baixo risco</strong> ou <strong>1 = alto risco</strong>.</p><div class="lab-note mt-3"><strong>Entrada:</strong> renda, score, dívida, atrasos...<br><strong>Saída:</strong> risco_credito.</div></div></div>
+                                <div class="col-xl-4"><div class="lab-concept-card"><div class="lab-card-title"><span>🧪</span><h5 class="fw-bold">Neste laboratório</h5></div><p>Você irá preparar os dados, selecionar variáveis, separar treino e teste, escolher um algoritmo, treinar, avaliar e realizar novas predições.</p><div class="lab-note mt-3">💡 Compare diferentes algoritmos usando a mesma base para entender como cada técnica se comporta.</div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-7"><div class="lab-upload-card"><div class="lab-card-title"><span>📥</span><h5 class="fw-bold">Importar base de treinamento</h5></div><p class="text-muted small">Selecione a planilha que será utilizada em todas as etapas.</p><form method="POST" enctype="multipart/form-data"><input type="hidden" name="acao" value="importar"><label class="lab-dropzone" for="arquivo-supervisionado"><span class="lab-upload-cloud">☁️</span><strong class="d-block mt-1">Selecione sua planilha</strong><small class="text-muted d-block mb-3">CSV ou XLSX</small><input id="arquivo-supervisionado" type="file" class="form-control" name="arquivo" accept=".csv,.xlsx" required></label><button type="submit" class="btn btn-primary mt-3">Importar Planilha →</button></form>{% if nome_arquivo %}<div class="alert alert-success mt-3 mb-0"><strong>✓ Arquivo carregado:</strong> {{ nome_arquivo }}</div>{% endif %}</div></div>
+                        <div class="col-lg-5"><div class="lab-example-card"><div class="lab-card-title"><span>📋</span><h5 class="fw-bold">Como deve ser a base?</h5></div><p class="text-muted small">Cada linha representa um exemplo conhecido. As colunas trazem características e uma delas contém a classe.</p><div class="table-responsive"><table class="table table-sm table-bordered align-middle mb-0"><thead class="table-light"><tr><th>renda</th><th>score</th><th>risco</th></tr></thead><tbody><tr><td>8500</td><td>790</td><td><span class="badge bg-success">0</span></td></tr><tr><td>2400</td><td>410</td><td><span class="badge bg-danger">1</span></td></tr></tbody></table></div><div class="lab-note mt-3">A coluna de saída deve conter as respostas que o algoritmo usará durante o aprendizado.</div></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================= -->
+        <!-- PASSO 2 -->
+        <!-- VISUALIZAÇÃO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-2"
+            class="wizard-content d-none"
+        >
+
+            {% if nome_arquivo %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        2. Visualização e Entendimento
+                    </h3>
+
+                    <p class="text-muted">
+                        Observe a estrutura, qualidade e distribuição
+                        básica dos dados antes de qualquer preparação.
+                    </p>
+
+
+                    <div class="row g-3 mt-3">
+
+                        <div class="col-md-3">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Registros
+                                </span>
+
+                                <strong>
+                                    {{ quantidade_registros }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Colunas
+                                </span>
+
+                                <strong>
+                                    {{ quantidade_colunas }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Valores ausentes
+                                </span>
+
+                                <strong>
+                                    {{ total_ausentes }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Duplicados
+                                </span>
+
+                                <strong>
+                                    {{ total_duplicados }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <h5 class="fw-bold mt-5">
+                        Colunas identificadas
+                    </h5>
+
+
+                    {% for coluna in colunas %}
+
+                    <span
+                        class="badge bg-primary me-2 mb-2 p-2"
+                    >
+                        {{ coluna }}
+                    </span>
+
+                    {% endfor %}
+
+
+                    <div class="table-responsive mt-4">
+
+                        <table
+                            class="table table-bordered table-hover align-middle"
+                        >
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    {% for coluna in colunas %}
+
+                                    <th>
+                                        {{ coluna }}
+                                    </th>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for linha in previa %}
+
+                                <tr>
+
+                                    {% for coluna in colunas %}
+
+                                    <td>
+
+                                        {% if linha[coluna] is none %}
+
+                                            <span class="text-danger">
+                                                Ausente
+                                            </span>
+
+                                        {% else %}
+
+                                            {{ linha[coluna] }}
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <h4 class="fw-bold mt-5">
+                        Análise das Variáveis
+                    </h4>
+
+
+                    <div class="table-responsive mt-3">
+
+                        <table class="table table-bordered table-hover">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>Coluna</th>
+                                    <th>Tipo</th>
+                                    <th>Tipo interno</th>
+                                    <th>Valores únicos</th>
+                                    <th>Ausentes</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for item in analise_colunas %}
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            {{ item.coluna }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ item.tipo }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.tipo_python }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.unicos }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.ausentes }}
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <h4 class="fw-bold mt-5">
+                        Estatísticas Numéricas
+                    </h4>
+
+
+                    <div class="table-responsive mt-3">
+
+                        <table class="table table-bordered">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>Variável</th>
+                                    <th>Mínimo</th>
+                                    <th>Máximo</th>
+                                    <th>Média</th>
+                                    <th>Mediana</th>
+                                    <th>Desvio padrão</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for item in estatisticas %}
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            {{ item.coluna }}
+                                        </strong>
+                                    </td>
+
+                                    <td>{{ item.minimo }}</td>
+                                    <td>{{ item.maximo }}</td>
+                                    <td>{{ item.media }}</td>
+                                    <td>{{ item.mediana }}</td>
+                                    <td>{{ item.desvio_padrao }}</td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="d-flex justify-content-between mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-go-step="1"
+                        >
+                            ← Importação
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-go-step="3"
+                        >
+                            Próxima: Preparação →
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 3 -->
+        <!-- PREPARAÇÃO -->
+        <!-- ================================================= -->
+
+        <section id="step-3" class="wizard-content d-none">
+            {% if nome_arquivo %}
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+                        <div>
+                            <h3 class="fw-bold mb-2">3. Preparação dos dados</h3>
+                            <p class="text-muted mb-0">Remova duplicidades antes da modelagem. A codificação, o tratamento de ausentes e a normalização são ajustados somente no conjunto de treinamento, após a divisão da base.</p>
+                        </div>
+                        <span class="badge rounded-pill text-bg-light border px-3 py-2">Preparação dos dados</span>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-lg-4"><div class="lab-concept-card h-100"><div class="lab-icon">🧹</div><h5>1. Limpeza</h5><p>Remove registros duplicados e identifica informações ausentes.</p></div></div>
+                        <div class="col-lg-4"><div class="lab-concept-card h-100"><div class="lab-icon">📏</div><h5>2. Normalização</h5><p>Após a divisão, aplica Min-Max apenas aos dados numéricos e codifica categorias automaticamente.</p></div></div>
+                        <div class="col-lg-4"><div class="lab-concept-card h-100"><div class="lab-icon">✓</div><h5>3. Base preparada</h5><p>A etapa seguinte permite definir entradas numéricas ou categóricas e a coluna-alvo.</p></div></div>
+                    </div>
+
+                    <div class="alert alert-info mt-4 mb-0">
+                        <strong>Normalização Min-Max</strong><br>
+                        <span class="lab-formula d-inline-block mt-2">x normalizado = (x − mínimo) / (máximo − mínimo)</span>
+                    </div>
+
+                    <div class="row g-3 mt-4">
+                        <div class="col-lg-6"><div class="clean-box before h-100"><h5 class="fw-bold">Antes da Preparação</h5><div class="row g-2 mt-1"><div class="col-4"><small>Registros</small><div class="fs-4 fw-bold">{{ quantidade_registros }}</div></div><div class="col-4"><small>Ausentes</small><div class="fs-4 fw-bold text-danger">{{ total_ausentes }}</div></div><div class="col-4"><small>Duplicados</small><div class="fs-4 fw-bold text-danger">{{ total_duplicados }}</div></div></div></div></div>
+                        <div class="col-lg-6"><div class="clean-box after h-100"><h5 class="fw-bold">Depois da Preparação</h5>{% if preparacao_concluida %}<div class="row g-2 mt-1"><div class="col-4"><small>Registros</small><div class="fs-4 fw-bold">{{ registros_preparados }}</div></div><div class="col-4"><small>Ausentes</small><div class="fs-4 fw-bold text-success">{{ ausentes_preparados }}</div></div><div class="col-4"><small>Duplicados</small><div class="fs-4 fw-bold text-success">{{ duplicados_preparados }}</div></div></div><div class="mt-3 small text-success fw-semibold">✓ Duplicados removidos &nbsp; ✓ Imputação e normalização reservadas para a etapa Treino/Teste</div>{% else %}<p class="text-muted mb-0 mt-3">Execute a preparação para visualizar o resultado.</p>{% endif %}</div></div>
+                    </div>
+
+                    <form method="POST" class="mt-4"><input type="hidden" name="acao" value="preparar"><button type="submit" class="btn btn-primary btn-lg">▶ Preparar Base</button></form>
+
+                    {% if preparacao_concluida %}
+                    {% if normalizacao_resumo %}
+                    <h4 class="fw-bold mt-5">Normalização aplicada</h4>
+                    <p class="text-muted">Os valores mínimo e máximo abaixo foram usados para transformar cada variável numérica.</p>
+                    <div class="table-responsive mt-3"><table class="table table-bordered table-hover align-middle"><thead class="table-light"><tr><th>Variável</th><th>Mínimo original</th><th>Máximo original</th><th>Escala final</th></tr></thead><tbody>{% for item in normalizacao_resumo %}<tr><td><strong>{{ item.coluna }}</strong></td><td>{{ item.minimo }}</td><td>{{ item.maximo }}</td><td><span class="badge bg-primary">0 a 1</span></td></tr>{% endfor %}</tbody></table></div>
+                    {% endif %}
+                    <h4 class="fw-bold mt-5">Prévia da Base Preparada</h4>
+                    <p class="text-muted">Observe que as variáveis numéricas agora aparecem normalizadas.</p>
+                    <div class="table-responsive mt-3"><table class="table table-bordered table-hover align-middle"><thead class="table-light"><tr>{% for coluna in colunas %}<th>{{ coluna }}</th>{% endfor %}</tr></thead><tbody>{% for linha in previa_preparada %}<tr>{% for coluna in colunas %}<td>{{ linha[coluna] }}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between mt-4"><button type="button" class="btn btn-outline-secondary" data-go-step="2">← Visualização</button>{% if preparacao_concluida %}<button type="button" class="btn btn-primary" data-go-step="4">Próxima: Variáveis →</button>{% endif %}</div>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- ================================================= -->
+        <!-- PASSO 4 -->
+        <!-- VARIÁVEIS -->
+        <!-- ================================================= -->
+
+        <section id="step-4" class="wizard-content d-none">
+            {% if preparacao_concluida %}
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="fw-bold">4. Seleção das Variáveis</h3>
+                    <p class="text-muted">Escolha, na própria tabela, quais colunas serão entradas do modelo e qual coluna será a saída que ele deverá aprender a prever.</p>
+
+                    <div class="alert alert-info mt-4"><strong>Como escolher?</strong><br><br><strong>Entrada (X):</strong> informações usadas pelo algoritmo para encontrar padrões.<br><strong>Saída (Y):</strong> classe que queremos prever. A saída pode conter duas ou mais classes (por exemplo: Alta, Média e Baixa). Variáveis categóricas são convertidas automaticamente em números para o treinamento.</div>
+
+                    <form method="POST">
+                        <input type="hidden" name="acao" value="selecionar_variaveis">
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered table-hover align-middle">
+                                <thead class="table-light"><tr><th>Coluna</th><th>Tipo</th><th>Valores únicos</th><th>Sugestão</th><th class="text-center">Entrada</th><th class="text-center">Saída</th></tr></thead>
+                                <tbody>
+                                    {% for item in variaveis_disponiveis %}
+                                    <tr>
+                                        <td><strong>{{ item.coluna }}</strong></td>
+                                        <td>{{ item.tipo }}</td>
+                                        <td>{{ item.unicos }}</td>
+                                        <td>{{ item.sugestao }}</td>
+                                        <td class="text-center">{% if item.pode_entrada %}<input type="checkbox" class="form-check-input input-entrada" name="entradas" value="{{ item.coluna }}" {% if item.coluna in entradas %}checked{% endif %}>{% else %}—{% endif %}</td>
+                                        <td class="text-center">{% if item.pode_saida %}<input type="radio" class="form-check-input input-saida" name="saida" value="{{ item.coluna }}" {% if item.coluna == saida %}checked{% endif %}>{% else %}—{% endif %}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card bg-light border-0 mt-4"><div class="card-body"><h5 class="fw-bold">Configuração Selecionada</h5><div class="mt-3"><strong>Entradas (X)</strong><div id="resumo-entradas" class="mt-2"></div></div><div class="mt-3"><strong>Saída (Y)</strong><div id="resumo-saida" class="mt-2"></div></div></div></div>
+
+                        <div class="d-flex justify-content-between mt-4"><button type="button" class="btn btn-outline-secondary" data-go-step="3">← Preparação</button><button type="submit" class="btn btn-primary">Confirmar Variáveis</button></div>
+                    </form>
+
+                    {% if variaveis_confirmadas %}<div class="alert alert-success mt-4"><strong>✓ Variáveis confirmadas</strong><br><br><strong>Entradas:</strong> {{ entradas | join(", ") }}<br><strong>Saída:</strong> {{ saida }}</div><div class="text-end"><button type="button" class="btn btn-primary" data-go-step="5">Próxima: Treino/Teste →</button></div>{% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- ================================================= -->
+        <!-- PASSO 5 -->
+        <!-- TREINO / TESTE -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-5"
+            class="wizard-content d-none"
+        >
+
+            {% if variaveis_confirmadas %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        5. Divisão em Treino e Teste
+                    </h3>
+
+                    <p class="text-muted">
+                        Separe uma parte dos registros
+                        para ensinar o modelo e outra parte
+                        para avaliá-lo.
+                    </p>
+
+
+                    <div class="row g-3 mt-3">
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Treinamento
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Registros usados para
+                                        ajustar o modelo.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Teste
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Registros que o modelo
+                                        não utilizará no aprendizado.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Base Preparada
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Os dados já chegam limpos e normalizados
+                                        da etapa de preparação.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <form method="POST" class="mt-4">
+
+                        <input
+                            type="hidden"
+                            name="acao"
+                            value="dividir"
+                        >
+
+
+                        <label class="form-label fw-semibold">
+                            Percentual para Treinamento
+                        </label>
+
+
+                        <select
+                            name="percentual_treino"
+                            class="form-select"
+                        >
+
+                            <option
+                                value="70"
+                                {% if percentual_treino == 70 %}
+                                selected
+                                {% endif %}
+                            >
+                                70% treino / 30% teste
+                            </option>
+
+                            <option
+                                value="80"
+                                {% if percentual_treino == 80 %}
+                                selected
+                                {% endif %}
+                            >
+                                80% treino / 20% teste
+                            </option>
+
+                            <option
+                                value="90"
+                                {% if percentual_treino == 90 %}
+                                selected
+                                {% endif %}
+                            >
+                                90% treino / 10% teste
+                            </option>
+
+                        </select>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-lg mt-4"
+                        >
+                            Dividir Base
+                        </button>
+
+                    </form>
+
+
+                    {% if divisao_concluida %}
+
+                    <div class="row g-3 mt-4">
+
+                        <div class="col-md-6">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Registros de Treinamento
+                                </span>
+
+                                <strong>
+                                    {{ qtd_treino }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Registros de Teste
+                                </span>
+
+                                <strong>
+                                    {{ qtd_teste }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="alert alert-info mt-4"><strong>Divisão concluída</strong><br><br>A base já preparada foi separada em treinamento e teste. O conjunto de teste permanecerá reservado para a avaliação do modelo.</div>
+
+                    {% endif %}
+
+
+                    <div class="d-flex justify-content-between mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-go-step="4"
+                        >
+                            ← Variáveis
+                        </button>
+
+
+                        {% if divisao_concluida %}
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-go-step="6"
+                        >
+                            Próxima: Algoritmo →
+                        </button>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 6 -->
+        <!-- ALGORITMO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-6"
+            class="wizard-content d-none"
+        >
+
+            {% if divisao_concluida %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        6. Escolha do Algoritmo
+                    </h3>
+
+                    <p class="text-muted">
+                        Escolha o algoritmo de classificação e entenda em que situação cada técnica costuma ser mais adequada.
+                    </p>
+
+
+                    <form method="POST">
+
+                        <input
+                            type="hidden"
+                            name="acao"
+                            value="selecionar_algoritmo"
+                        >
+
+
+                        <div class="row g-4 mt-3">
+
+                            <div class="col-md-6">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <div class="form-check">
+
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="algoritmo"
+                                                id="alg-logistica"
+                                                value="logistica"
+                                                required
+                                                {% if algoritmo == "logistica" %}
+                                                checked
+                                                {% endif %}
+                                            >
+
+                                            <label
+                                                class="form-check-label fw-bold text-primary"
+                                                for="alg-logistica"
+                                            >
+                                                Regressão Logística
+                                            </label>
+
+                                        </div>
+
+                                        <p class="mt-3 mb-2">Cria uma fronteira linear e estima a probabilidade de cada classe.</p>
+                                        <div class="alert alert-primary py-2 px-3 mb-0 small"><strong>Quando escolher?</strong><br>Quando você quer um modelo simples, rápido e fácil de interpretar, especialmente quando a separação entre as classes tende a ser mais linear.</div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <div class="form-check">
+
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="algoritmo"
+                                                id="alg-knn"
+                                                value="knn"
+                                                {% if algoritmo == "knn" %}
+                                                checked
+                                                {% endif %}
+                                            >
+
+                                            <label
+                                                class="form-check-label fw-bold text-primary"
+                                                for="alg-knn"
+                                            >
+                                                KNN
+                                            </label>
+
+                                        </div>
+
+                                        <p class="mt-3 mb-2">Classifica um novo caso observando os exemplos mais próximos dele.</p>
+                                        <div class="alert alert-primary py-2 px-3 mb-0 small"><strong>Quando escolher?</strong><br>Quando casos parecidos tendem a pertencer à mesma classe e a base não é muito grande. É bastante sensível à escala das variáveis.</div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <div class="form-check">
+
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="algoritmo"
+                                                id="alg-arvore"
+                                                value="arvore"
+                                                {% if algoritmo == "arvore" %}
+                                                checked
+                                                {% endif %}
+                                            >
+
+                                            <label
+                                                class="form-check-label fw-bold text-primary"
+                                                for="alg-arvore"
+                                            >
+                                                Árvore de Decisão
+                                            </label>
+
+                                        </div>
+
+                                        <p class="mt-3 mb-2">Aprende regras do tipo “se... então...” e divide os dados em caminhos de decisão.</p>
+                                        <div class="alert alert-primary py-2 px-3 mb-0 small"><strong>Quando escolher?</strong><br>Quando você quer visualizar e explicar as regras usadas na classificação ou quando as relações entre as variáveis não são lineares.</div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="card bg-light border-0 h-100">
+
+                                    <div class="card-body">
+
+                                        <div class="form-check">
+
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="algoritmo"
+                                                id="alg-rf"
+                                                value="random_forest"
+                                                {% if algoritmo == "random_forest" %}
+                                                checked
+                                                {% endif %}
+                                            >
+
+                                            <label
+                                                class="form-check-label fw-bold text-primary"
+                                                for="alg-rf"
+                                            >
+                                                Random Forest
+                                            </label>
+
+                                        </div>
+
+                                        <p class="mt-3 mb-2">Combina várias árvores de decisão e usa o conjunto para produzir a classificação final.</p>
+                                        <div class="alert alert-primary py-2 px-3 mb-0 small"><strong>Quando escolher?</strong><br>Quando você busca maior robustez e desempenho em relações mais complexas, aceitando um modelo menos simples de explicar.</div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card border-0 bg-light mt-4">
+                            <div class="card-body">
+                                <h5 class="fw-bold mb-3">Guia rápido para decidir</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm align-middle mb-0">
+                                        <thead><tr><th>Se você precisa...</th><th>Considere</th></tr></thead>
+                                        <tbody>
+                                            <tr><td>Facilidade de interpretação e uma referência inicial</td><td><strong>Regressão Logística</strong></td></tr>
+                                            <tr><td>Classificar pela semelhança entre exemplos</td><td><strong>KNN</strong></td></tr>
+                                            <tr><td>Regras visuais e fáceis de explicar</td><td><strong>Árvore de Decisão</strong></td></tr>
+                                            <tr><td>Combinar várias árvores para maior robustez</td><td><strong>Random Forest</strong></td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p class="text-muted small mt-3 mb-0">A escolha inicial é uma hipótese. A etapa de comparação permite verificar como os algoritmos se comportam sobre os mesmos dados.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                data-go-step="5"
+                            >
+                                ← Treino/Teste
+                            </button>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Confirmar Algoritmo
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    {% if algoritmo_selecionado %}
+
+                    <div class="alert alert-success mt-4">
+
+                        <strong>
+                            ✓ Algoritmo selecionado
+                        </strong>
+
+                        <br>
+
+                        {{ algoritmo_nome }}
+
+                    </div>
+
+
+                    <div class="text-end">
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-go-step="7"
+                        >
+                            Próxima: Treinamento →
+                        </button>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 7 -->
+        <!-- TREINAMENTO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-7"
+            class="wizard-content d-none"
+        >
+
+            {% if algoritmo_selecionado %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        7. Treinamento do Modelo
+                    </h3>
+
+                    <p class="text-muted">
+                        O algoritmo aprenderá padrões
+                        utilizando somente a base de treinamento.
+                    </p>
+
+
+                    <!-- CONCEITOS -->
+
+                    <div class="row g-3 mt-3">
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Algoritmo
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        {{ algoritmo_nome }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Registros de Treino
+                                    </h5>
+
+                                    <p class="mb-0 fs-4 fw-bold">
+                                        {{ qtd_treino }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Registros de Teste
+                                    </h5>
+
+                                    <p class="mb-0 fs-4 fw-bold">
+                                        {{ qtd_teste }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MODELO CONFIGURADO -->
+
+                    <div class="card bg-light border-0 mt-4">
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                Modelo Configurado
+                            </h5>
+
+
+                            <h6 class="fw-bold mt-4">
+                                Entradas
+                            </h6>
+
+
+                            {% for entrada in entradas %}
+
+                            <span
+                                class="badge bg-primary me-2 mb-2 p-2"
+                            >
+                                X{{ loop.index }}
+                                =
+                                {{ entrada }}
+                            </span>
+
+                            {% endfor %}
+
+
+                            <h6 class="fw-bold mt-4">
+                                Saída
+                            </h6>
+
+
+                            <span class="badge bg-success p-2">
+                                Y = {{ saida }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BOTÃO -->
+
+                    <div class="text-center my-4">
+
+                        <button
+                            type="button"
+                            id="botao-treinar-classificacao"
+                            class="btn btn-primary btn-lg px-5"
+                        >
+                            ▶ Treinar Modelo
+                        </button>
+
+                    </div>
+
+
+                    <!-- PROGRESSO -->
+
+                    <div
+                        id="painel-progresso-classificacao"
+                        class="d-none mt-4"
+                    >
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar progress-bar-striped progress-bar-animated"
+                                style="width:100%"
+                            >
+                                Treinando...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TERMINAL -->
+
+                    <div class="mt-5">
+
+                        <div
+                            class="d-flex justify-content-between align-items-center"
+                        >
+
+                            <div>
+
+                                <h4 class="fw-bold">
+                                    Terminal do Treinamento
+                                </h4>
+
+                                <p class="text-muted">
+                                    Acompanhe as etapas do treinamento
+                                    em tempo real.
+                                </p>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                id="limpar-terminal-classificacao"
+                                class="btn btn-outline-secondary btn-sm"
+                            >
+                                Limpar
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="terminal-classificacao"
+                            class="mt-3 p-4 rounded"
+                            style="
+                                background:#101828;
+                                color:#d1e7dd;
+                                height:430px;
+                                overflow-y:auto;
+                                font-family:Consolas, Monaco, monospace;
+                                white-space:pre-wrap;
+                            "
+                        >
+                            Aguardando treinamento...
+                        </div>
+
+                    </div>
+
+
+                    <!-- RESULTADO -->
+
+                    <div
+                        id="resultado-treinamento-classificacao"
+                        class="{% if not modelo_treinado %}d-none{% endif %} mt-5"
+                    >
+
+                        <div class="alert alert-success">
+
+                            <strong>
+                                ✓ Treinamento concluído
+                            </strong>
+
+                            <br><br>
+
+                            O modelo está pronto para ser
+                            testado na base reservada para avaliação.
+
+                        </div>
+
+
+                        <div class="row g-3">
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Algoritmo
+                                    </span>
+
+                                    <strong
+                                        id="resultado-classificacao-algoritmo"
+                                        style="font-size:20px;"
+                                    >
+                                        {% if modelo_treinado %}
+                                            {{ algoritmo_nome }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Registros de treino
+                                    </span>
+
+                                    <strong
+                                        id="resultado-classificacao-treino"
+                                    >
+                                        {% if modelo_treinado %}
+                                            {{ qtd_treino }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4">
+
+                                <div class="metric-card">
+
+                                    <span>
+                                        Variáveis de entrada
+                                    </span>
+
+                                    <strong
+                                        id="resultado-classificacao-entradas"
+                                    >
+                                        {% if modelo_treinado %}
+                                            {{ entradas | length }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="text-end mt-4">
+
+                            <button
+                                type="button"
+                                id="botao-ir-avaliacao-classificacao"
+                                class="btn btn-primary"
+                                {% if not modelo_treinado %}disabled{% endif %}
+                            >
+                                Próxima: Avaliação →
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-go-step="6"
+                        >
+                            ← Algoritmo
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 8 -->
+        <!-- AVALIAÇÃO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-8"
+            class="wizard-content d-none"
+        >
+
+            <style>
+                .avaliacao-resumo {
+                    background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
+                    border: 1px solid #dce9ff;
+                    border-radius: 18px;
+                }
+
+                .avaliacao-resumo-item {
+                    text-align: center;
+                    padding: 18px 12px;
+                }
+
+                .avaliacao-resumo-item + .avaliacao-resumo-item {
+                    border-left: 1px solid #dce5f2;
+                }
+
+                .avaliacao-resumo-item span {
+                    display: block;
+                    color: #667085;
+                    font-size: .88rem;
+                    margin-bottom: 4px;
+                }
+
+                .avaliacao-resumo-item strong {
+                    font-size: 1.8rem;
+                    line-height: 1;
+                    color: #1d3557;
+                }
+
+                .indicador-card {
+                    border: 1px solid #e7edf5 !important;
+                    border-radius: 18px;
+                    transition: transform .18s ease, box-shadow .18s ease;
+                    overflow: hidden;
+                }
+
+                .indicador-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 .7rem 1.5rem rgba(16, 24, 40, .08) !important;
+                }
+
+                .indicador-ilustracao {
+                    width: 58px;
+                    height: 58px;
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 12px;
+                    background: #eef5ff;
+                    font-size: 1.8rem;
+                }
+
+                .indicador-valor {
+                    font-size: 2rem;
+                    line-height: 1.1;
+                    font-weight: 800;
+                    color: #17365d;
+                    margin: 8px 0;
+                }
+
+                .indicador-pergunta {
+                    color: #667085;
+                    font-size: .86rem;
+                    line-height: 1.35;
+                    min-height: 38px;
+                }
+
+                .support-valor {
+                    font-size: 1.02rem;
+                    line-height: 1.5;
+                }
+
+                .avaliacao-detalhe {
+                    border: 0;
+                    background: transparent;
+                    color: #0d6efd;
+                    font-size: .84rem;
+                    font-weight: 600;
+                    padding: 4px 0 0;
+                }
+
+                .avaliacao-detalhe:hover {
+                    text-decoration: underline;
+                }
+
+                .confusao-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 12px;
+                }
+
+                .confusao-celula {
+                    border-radius: 16px;
+                    padding: 20px 14px;
+                    text-align: center;
+                    border: 1px solid #e4e7ec;
+                    background: #fff;
+                }
+
+                .confusao-celula.correto {
+                    background: #f0fbf6;
+                    border-color: #b7ead1;
+                }
+
+                .confusao-celula.erro {
+                    background: #fff5f5;
+                    border-color: #ffd0d0;
+                }
+
+                .confusao-celula strong {
+                    display: block;
+                    font-size: 2rem;
+                    line-height: 1;
+                    margin-bottom: 8px;
+                }
+
+                .confusao-celula small {
+                    color: #667085;
+                }
+
+                .formula-box {
+                    background: #f8fafc;
+                    border: 1px solid #e4e7ec;
+                    border-radius: 16px;
+                    padding: 18px;
+                }
+
+                .formula-linha {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 16px;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #eaecf0;
+                }
+
+                .formula-linha:last-child {
+                    border-bottom: 0;
+                    padding-bottom: 0;
+                }
+
+                .formula-linha:first-child {
+                    padding-top: 0;
+                }
+
+                .formula-linha code {
+                    color: #344054;
+                    background: transparent;
+                    font-size: .86rem;
+                    text-align: right;
+                    white-space: normal;
+                }
+
+
+                /* MICROINTERAÇÕES DA AVALIAÇÃO */
+                @keyframes avaliacaoFadeUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(18px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                @keyframes avaliacaoPop {
+                    0% {
+                        opacity: 0;
+                        transform: scale(.88);
+                    }
+                    70% {
+                        transform: scale(1.04);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+
+                @keyframes avaliacaoPulse {
+                    0%, 100% {
+                        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+                    }
+                    50% {
+                        box-shadow: 0 0 0 7px rgba(13, 110, 253, .08);
+                    }
+                }
+
+                #painel-avaliacao-classificacao.avaliacao-animar .avaliacao-resumo {
+                    animation: avaliacaoFadeUp .45s ease both;
+                }
+
+                #painel-avaliacao-classificacao.avaliacao-animar .indicador-card {
+                    animation: avaliacaoFadeUp .5s ease both;
+                }
+
+                #painel-avaliacao-classificacao.avaliacao-animar .col-sm-6:nth-child(1) .indicador-card { animation-delay: .05s; }
+                #painel-avaliacao-classificacao.avaliacao-animar .col-sm-6:nth-child(2) .indicador-card { animation-delay: .10s; }
+                #painel-avaliacao-classificacao.avaliacao-animar .col-sm-6:nth-child(3) .indicador-card { animation-delay: .15s; }
+                #painel-avaliacao-classificacao.avaliacao-animar .col-sm-6:nth-child(4) .indicador-card { animation-delay: .20s; }
+                #painel-avaliacao-classificacao.avaliacao-animar .col-sm-6:nth-child(5) .indicador-card { animation-delay: .25s; }
+
+                #painel-avaliacao-classificacao.avaliacao-animar .indicador-ilustracao {
+                    animation: avaliacaoPop .55s ease both;
+                }
+
+                .indicador-ilustracao {
+                    transition: transform .2s ease, background .2s ease;
+                }
+
+                .indicador-card:hover .indicador-ilustracao {
+                    transform: scale(1.08) rotate(-3deg);
+                    background: #e1edff;
+                }
+
+                .indicador-valor {
+                    transition: transform .2s ease;
+                }
+
+                .indicador-card:hover .indicador-valor {
+                    transform: scale(1.04);
+                }
+
+                .confusao-celula {
+                    transition: transform .18s ease, box-shadow .18s ease;
+                }
+
+                .confusao-celula:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 .6rem 1.25rem rgba(16, 24, 40, .08);
+                }
+
+                .formula-linha {
+                    align-items: center;
+                    transition: background .18s ease, padding .18s ease;
+                    border-radius: 10px;
+                }
+
+                .formula-linha:hover {
+                    background: #ffffff;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                }
+
+                .formula-titulo {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 7px;
+                    white-space: nowrap;
+                }
+
+                .formula-info {
+                    width: 22px;
+                    height: 22px;
+                    border-radius: 50%;
+                    border: 1px solid #b8c7dd;
+                    background: #fff;
+                    color: #0d6efd;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: .75rem;
+                    font-weight: 800;
+                    cursor: help;
+                    transition: transform .18s ease, background .18s ease;
+                }
+
+                .formula-info:hover {
+                    transform: scale(1.12);
+                    background: #eef5ff;
+                }
+
+                .tooltip .tooltip-inner {
+                    max-width: 330px;
+                    text-align: left;
+                    padding: 10px 12px;
+                    font-size: .83rem;
+                    line-height: 1.45;
+                }
+
+                #botao-avaliar-classificacao {
+                    transition: transform .18s ease, box-shadow .18s ease;
+                }
+
+                #botao-avaliar-classificacao:hover:not(:disabled) {
+                    transform: translateY(-2px);
+                    box-shadow: 0 .6rem 1.2rem rgba(13, 110, 253, .2);
+                }
+
+                #botao-avaliar-classificacao:disabled {
+                    animation: avaliacaoPulse 1.4s ease-in-out infinite;
+                }
+
+                @media (max-width: 767.98px) {
+                    .avaliacao-resumo-item + .avaliacao-resumo-item {
+                        border-left: 0;
+                        border-top: 1px solid #dce5f2;
+                    }
+
+                    .confusao-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            
+        /* ETAPA 1 - INTRODUÇÃO À REDE NEURAL */
+        .rn-intro {
+            padding: 22px;
+            border: 1px solid #cfe2ff;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+        }
+
+        .rn-intro-icon {
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            font-size: 1.5rem;
+            background: white;
+            box-shadow: 0 8px 24px rgba(13,110,253,.12);
+        }
+
+        .rn-concept-card, .rn-upload-card, .rn-example-card {
+            padding: 20px;
+            border-radius: 17px;
+            background: #fff;
+            border: 1px solid #e7edf5;
+            box-shadow: 0 8px 25px rgba(20,48,90,.05);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .rn-concept-card:hover, .rn-upload-card:hover, .rn-example-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 13px 32px rgba(20,48,90,.10);
+        }
+
+        .rn-card-title {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .rn-card-title > span { font-size: 1.45rem; }
+
+        .rn-mini-network {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-height: 120px;
+            padding: 15px 8px;
+            border-radius: 14px;
+            background: #f8faff;
+        }
+
+        .rn-layer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rn-layer > span {
+            min-width: 35px;
+            height: 35px;
+            padding: 0 8px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #e8f1ff;
+            border: 2px solid #0d6efd;
+            font-weight: 700;
+            font-size: .78rem;
+        }
+
+        .rn-neurons > span {
+            min-width: 32px;
+            width: 32px;
+            height: 32px;
+            background: #eee8ff;
+            border-color: #7c3aed;
+        }
+
+        .rn-output > span {
+            background: #fff3df;
+            border-color: #f59e0b;
+        }
+
+        .rn-layer small { color: #667085; font-size: .72rem; }
+        .rn-arrows { color: #0d6efd; font-size: 1.4rem; font-weight: 700; }
+
+        .rn-hierarchy {
+            margin-top: 12px;
+            color: white;
+        }
+
+        .rn-hierarchy-ai {
+            padding: 13px;
+            border-radius: 15px;
+            background: #0d6efd;
+        }
+
+        .rn-hierarchy-ml {
+            margin-top: 9px;
+            padding: 11px;
+            border-radius: 12px;
+            color: #102a56;
+            background: #a9d0ff;
+        }
+
+        .rn-hierarchy-nn {
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 10px;
+            color: #3b176f;
+            background: #e0c9ff;
+        }
+
+        .rn-hierarchy-dl {
+            margin-top: 8px;
+            padding: 9px;
+            border-radius: 9px;
+            background: #f1e9ff;
+        }
+
+        .rn-hierarchy strong, .rn-hierarchy small { display: block; }
+        .rn-hierarchy small { margin-top: 2px; font-size: .72rem; }
+
+        .rn-learning-note, .rn-tip {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 14px;
+        }
+
+        .rn-learning-note { background: #eef7ff; }
+        .rn-tip { background: #fff8e7; }
+
+        .rn-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .rn-flow > div {
+            min-width: 58px;
+            text-align: center;
+        }
+
+        .rn-flow span, .rn-flow strong, .rn-flow small { display: block; }
+        .rn-flow span { font-size: 1.5rem; margin-bottom: 4px; }
+        .rn-flow strong { font-size: .68rem; }
+        .rn-flow small { font-size: .62rem; color: #667085; }
+        .rn-flow b { color: #98a2b3; }
+
+        .rn-dropzone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 28px;
+            border: 2px dashed #9fc5ff;
+            border-radius: 16px;
+            background: #fbfdff;
+            cursor: pointer;
+            transition: border-color .2s ease, background .2s ease;
+        }
+
+        .rn-dropzone:hover {
+            border-color: #0d6efd;
+            background: #f4f8ff;
+        }
+
+        .rn-upload-cloud { font-size: 2rem; }
+        .rn-dropzone .form-control { cursor: pointer; }
+
+        @media (max-width: 991.98px) {
+            .rn-intro { padding: 16px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .rn-concept-card, .rn-upload-card, .rn-example-card {
+                transition: none;
+            }
+        }
+
+    
+        /* ETAPA 1 - VARIANTE COMPACTA */
+        #step-1 .rn-intro {
+            padding: 16px 18px;
+            border-radius: 17px;
+        }
+
+        #step-1 .rn-intro > .d-flex {
+            margin-bottom: 12px !important;
+        }
+
+        #step-1 .rn-intro-icon {
+            width: 40px;
+            height: 40px;
+            flex-basis: 40px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+        }
+
+        #step-1 .rn-intro h3 {
+            font-size: 1.35rem;
+        }
+
+        #step-1 .rn-intro > .d-flex p {
+            font-size: .9rem;
+        }
+
+        #step-1 .rn-concept-card {
+            padding: 15px;
+            border-radius: 14px;
+        }
+
+        #step-1 .rn-concept-card h5 {
+            font-size: 1rem;
+        }
+
+        #step-1 .rn-concept-card p {
+            font-size: .84rem;
+            line-height: 1.45;
+        }
+
+        #step-1 .rn-card-title > span {
+            font-size: 1.15rem;
+        }
+
+        #step-1 .rn-mini-network {
+            min-height: 78px;
+            padding: 8px;
+            gap: 8px;
+        }
+
+        #step-1 .rn-layer {
+            gap: 3px;
+        }
+
+        #step-1 .rn-layer > span {
+            min-width: 26px;
+            height: 26px;
+            font-size: .66rem;
+            border-width: 1.5px;
+        }
+
+        #step-1 .rn-neurons > span {
+            width: 24px;
+            min-width: 24px;
+            height: 24px;
+        }
+
+        #step-1 .rn-layer small {
+            font-size: .62rem;
+        }
+
+        #step-1 .rn-arrows {
+            font-size: 1rem;
+        }
+
+        #step-1 .rn-hierarchy {
+            margin-top: 8px;
+        }
+
+        #step-1 .rn-hierarchy-ai {
+            padding: 9px;
+            border-radius: 11px;
+        }
+
+        #step-1 .rn-hierarchy-ml,
+        #step-1 .rn-hierarchy-nn,
+        #step-1 .rn-hierarchy-dl {
+            margin-top: 5px;
+            padding: 7px 8px;
+            border-radius: 8px;
+        }
+
+        #step-1 .rn-hierarchy strong {
+            font-size: .82rem;
+        }
+
+        #step-1 .rn-hierarchy small {
+            font-size: .63rem;
+        }
+
+        #step-1 .rn-learning-note {
+            padding: 10px;
+            gap: 8px;
+            border-radius: 11px;
+        }
+
+        #step-1 .rn-learning-note .fs-4 {
+            font-size: 1.15rem !important;
+        }
+
+        #step-1 .rn-learning-note strong {
+            font-size: .82rem;
+        }
+
+        #step-1 .rn-learning-note p {
+            font-size: .72rem !important;
+        }
+
+        #step-1 .rn-toggle-intro {
+            white-space: nowrap;
+        }
+
+</style>
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+
+                        <div>
+                            <h3 class="fw-bold mb-2">
+                                8. Avaliação do Modelo
+                            </h3>
+
+                            <p class="text-muted mb-0">
+                                Veja como o modelo se comporta com registros que não participaram do treinamento.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="botao-avaliar-classificacao"
+                            class="btn btn-primary btn-lg px-4"
+                        >
+                            Avaliar Modelo
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="painel-avaliacao-classificacao"
+                        class="d-none"
+                    >
+
+                        <!-- RESUMO -->
+
+                        <div class="avaliacao-resumo mt-5">
+
+                            <div class="row g-0">
+
+                                <div class="col-md-4 avaliacao-resumo-item">
+                                    <span>Registros avaliados</span>
+                                    <strong id="avaliacao-classificacao-total">-</strong>
+                                </div>
+
+                                <div class="col-md-4 avaliacao-resumo-item">
+                                    <span>✓ Acertos</span>
+                                    <strong id="avaliacao-classificacao-acertos" class="text-success">-</strong>
+                                </div>
+
+                                <div class="col-md-4 avaliacao-resumo-item">
+                                    <span>✕ Erros</span>
+                                    <strong id="avaliacao-classificacao-erros" class="text-danger">-</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- INDICADORES -->
+
+                        <div class="d-flex justify-content-between align-items-end mt-5 mb-3">
+
+                            <div>
+                                <h4 class="fw-bold mb-1">
+                                    Indicadores de Desempenho
+                                </h4>
+
+                                <p class="text-muted mb-0">
+                                    Cada indicador responde a uma pergunta sobre o modelo.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row g-3">
+
+                            <!-- ACURÁCIA -->
+
+                            <div class="col-sm-6 col-xl">
+
+                                <div class="card indicador-card shadow-sm h-100 text-center">
+
+                                    <div class="card-body p-3">
+
+                                        <div class="indicador-ilustracao" aria-hidden="true">
+                                            🎯
+                                        </div>
+
+                                        <h6 class="fw-bold mb-0">
+                                            Acurácia
+                                        </h6>
+
+                                        <div
+                                            id="metrica-classificacao-acuracia"
+                                            class="indicador-valor text-primary"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="indicador-pergunta">
+                                            No geral, quanto o modelo acertou?
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            class="avaliacao-detalhe"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#detalhe-acuracia"
+                                            aria-expanded="false"
+                                        >
+                                            Saiba mais
+                                        </button>
+
+                                        <div
+                                            id="detalhe-acuracia"
+                                            class="collapse text-start mt-2"
+                                        >
+                                            <small class="text-muted">
+                                                Percentual de todas as previsões que foram classificadas corretamente.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PRECISÃO -->
+
+                            <div class="col-sm-6 col-xl">
+
+                                <div class="card indicador-card shadow-sm h-100 text-center">
+
+                                    <div class="card-body p-3">
+
+                                        <div class="indicador-ilustracao" aria-hidden="true">
+                                            ✅
+                                        </div>
+
+                                        <h6 class="fw-bold mb-0">
+                                            Precisão
+                                        </h6>
+
+                                        <div
+                                            id="metrica-classificacao-precisao"
+                                            class="indicador-valor text-success"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="indicador-pergunta">
+                                            Entre as classes previstas, quantas estão corretas?
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            class="avaliacao-detalhe"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#detalhe-precisao"
+                                            aria-expanded="false"
+                                        >
+                                            Saiba mais
+                                        </button>
+
+                                        <div
+                                            id="detalhe-precisao"
+                                            class="collapse text-start mt-2"
+                                        >
+                                            <small class="text-muted">
+                                                Em classificação multiclasse, utiliza a média macro: calcula a precisão de cada classe e tira a média.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- RECALL -->
+
+                            <div class="col-sm-6 col-xl">
+
+                                <div class="card indicador-card shadow-sm h-100 text-center">
+
+                                    <div class="card-body p-3">
+
+                                        <div class="indicador-ilustracao" aria-hidden="true">
+                                            🔎
+                                        </div>
+
+                                        <h6 class="fw-bold mb-0">
+                                            Recall
+                                        </h6>
+
+                                        <div
+                                            id="metrica-classificacao-recall"
+                                            class="indicador-valor text-warning"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="indicador-pergunta">
+                                            Quantos casos reais de cada classe identificou?
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            class="avaliacao-detalhe"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#detalhe-recall"
+                                            aria-expanded="false"
+                                        >
+                                            Saiba mais
+                                        </button>
+
+                                        <div
+                                            id="detalhe-recall"
+                                            class="collapse text-start mt-2"
+                                        >
+                                            <small class="text-muted">
+                                                Em classificação multiclasse, calcula o recall por classe e apresenta a média macro.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- F1 -->
+
+                            <div class="col-sm-6 col-xl">
+
+                                <div class="card indicador-card shadow-sm h-100 text-center">
+
+                                    <div class="card-body p-3">
+
+                                        <div class="indicador-ilustracao" aria-hidden="true">
+                                            ⚖️
+                                        </div>
+
+                                        <h6 class="fw-bold mb-0">
+                                            F1-Score
+                                        </h6>
+
+                                        <div
+                                            id="metrica-classificacao-f1"
+                                            class="indicador-valor"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="indicador-pergunta">
+                                            Precisão e Recall estão equilibrados?
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            class="avaliacao-detalhe"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#detalhe-f1"
+                                            aria-expanded="false"
+                                        >
+                                            Saiba mais
+                                        </button>
+
+                                        <div
+                                            id="detalhe-f1"
+                                            class="collapse text-start mt-2"
+                                        >
+                                            <small class="text-muted">
+                                                Combina Precisão e Recall em um único indicador de equilíbrio.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- SUPPORT -->
+
+                            <div class="col-sm-6 col-xl">
+
+                                <div class="card indicador-card shadow-sm h-100 text-center">
+
+                                    <div class="card-body p-3">
+
+                                        <div class="indicador-ilustracao" aria-hidden="true">
+                                            👥
+                                        </div>
+
+                                        <h6 class="fw-bold mb-0">
+                                            Support
+                                        </h6>
+
+                                        <div
+                                            id="metrica-classificacao-support"
+                                            class="indicador-valor support-valor text-info"
+                                        >
+                                            -
+                                        </div>
+
+                                        <div class="indicador-pergunta">
+                                            Quantos exemplos existem por classe?
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            class="avaliacao-detalhe"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#detalhe-support"
+                                            aria-expanded="false"
+                                        >
+                                            Saiba mais
+                                        </button>
+
+                                        <div
+                                            id="detalhe-support"
+                                            class="collapse text-start mt-2"
+                                        >
+                                            <small class="text-muted">
+                                                Não mede desempenho. Mostra quantos registros reais de cada classe sustentam a avaliação.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- MATRIZ + CÁLCULOS -->
+
+                        <div class="row g-4 mt-4">
+
+                            <div class="col-lg-6">
+
+                                <h4 class="fw-bold mb-3">
+                                    Matriz de Confusão
+                                </h4>
+
+                                <p class="text-muted small">
+                                    Compare o valor real com a previsão feita pelo modelo.
+                                </p>
+
+                                <div id="matriz-classificacao-dinamica" class="table-responsive">
+                                    <div class="text-muted">Clique em “Avaliar Modelo” para gerar a matriz.</div>
+                                </div>
+                                <div class="small text-muted mt-2" id="legenda-matriz-classificacao"></div>
+
+                            </div>
+
+
+                            <div class="col-lg-6">
+
+                                <h4 class="fw-bold mb-3">
+                                    Como foi calculado?
+                                </h4>
+
+                                <p class="text-muted small">
+                                    As fórmulas abaixo usam os resultados desta avaliação.
+                                </p>
+
+                                <div class="formula-box">
+
+                                    <div class="formula-linha">
+                                        <strong class="formula-titulo">
+                                            Acurácia
+                                            <span
+                                                class="formula-info"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Fórmula: (VP + VN) / (VP + VN + FP + FN). Mede a proporção total de previsões corretas."
+                                            >i</span>
+                                        </strong>
+                                        <code id="formula-classificacao-acuracia">-</code>
+                                    </div>
+
+                                    <div class="formula-linha">
+                                        <strong class="formula-titulo">
+                                            Precisão
+                                            <span
+                                                class="formula-info"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Fórmula: VP / (VP + FP). Entre os casos previstos como classe 1, mostra quantos realmente eram 1."
+                                            >i</span>
+                                        </strong>
+                                        <code id="formula-classificacao-precisao">-</code>
+                                    </div>
+
+                                    <div class="formula-linha">
+                                        <strong class="formula-titulo">
+                                            Recall
+                                            <span
+                                                class="formula-info"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Fórmula: VP / (VP + FN). Entre todos os casos realmente positivos, mostra quantos foram encontrados."
+                                            >i</span>
+                                        </strong>
+                                        <code id="formula-classificacao-recall">-</code>
+                                    </div>
+
+                                    <div class="formula-linha">
+                                        <strong class="formula-titulo">
+                                            F1-Score
+                                            <span
+                                                class="formula-info"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Fórmula: 2 × (Precisão × Recall) / (Precisão + Recall). Resume o equilíbrio entre Precisão e Recall."
+                                            >i</span>
+                                        </strong>
+                                        <code id="formula-classificacao-f1">-</code>
+                                    </div>
+
+                                    <div class="formula-linha">
+                                        <strong class="formula-titulo">
+                                            Support
+                                            <span
+                                                class="formula-info"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Support é a quantidade real de registros de cada classe no conjunto de teste."
+                                            >i</span>
+                                        </strong>
+                                        <code id="formula-classificacao-support">-</code>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- RESULTADO POR REGISTRO -->
+
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mt-5">
+
+                            <div>
+                                <h4 class="fw-bold mb-1">
+                                    Resultado por Registro
+                                </h4>
+
+                                <p class="text-muted mb-0">
+                                    Confira onde o modelo acertou ou errou.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="card border-0 bg-light mt-3">
+                            <div class="card-body p-3">
+                                <div class="row g-2 align-items-center">
+
+                                    <div class="col-lg-4">
+                                        <input
+                                            type="search"
+                                            id="busca-avaliacao-classificacao"
+                                            class="form-control"
+                                            placeholder="Buscar registro..."
+                                        >
+                                    </div>
+
+                                    <div class="col-lg-5">
+                                        <div class="btn-group w-100">
+                                            <button type="button" class="btn btn-primary filtro-avaliacao" data-filtro="todos">
+                                                Todos
+                                            </button>
+                                            <button type="button" class="btn btn-outline-success filtro-avaliacao" data-filtro="acerto">
+                                                ✓ Acertos
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger filtro-avaliacao" data-filtro="erro">
+                                                ✕ Erros
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <select id="por-pagina-avaliacao-classificacao" class="form-select">
+                                            <option value="10" selected>10 por página</option>
+                                            <option value="25">25 por página</option>
+                                            <option value="50">50 por página</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Registro</th>
+                                        <th>Esperado</th>
+                                        <th>Previsto</th>
+                                        <th>Resultado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-avaliacao-classificacao"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mt-3">
+                            <small id="contador-avaliacao" class="text-muted">
+                                Exibindo 0 de 0 registros
+                            </small>
+
+                            <ul id="paginacao-avaliacao-classificacao" class="pagination pagination-sm mb-0"></ul>
+                        </div>
+
+
+                        <div class="d-flex justify-content-between mt-4">
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                data-go-step="7"
+                            >
+                                ← Treinamento
+                            </button>
+
+                            <button
+                                type="button"
+                                id="ir-predicao-classificacao"
+                                class="btn btn-primary"
+                            >
+                                Próxima: Predição →
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 9 -->
+        <!-- PREDIÇÃO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-9"
+            class="wizard-content d-none"
+        >
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        9. Predição com Novos Dados
+                    </h3>
+
+                    <p class="text-muted">
+                        Utilize o modelo treinado
+                        para classificar uma nova base.
+                    </p>
+
+
+                    <div class="row g-3 mt-3">
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Predição
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        O modelo aplica o que aprendeu
+                                        a registros ainda não classificados.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Nova Base
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        Deve possuir todas
+                                        as variáveis de entrada do modelo.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                            <div class="card bg-light border-0 h-100">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-primary">
+                                        Mesmo Scaler
+                                    </h5>
+
+                                    <p class="mb-0">
+                                        A nova base usa a normalização
+                                        aprendida com o treino.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card bg-light border-0 mt-4">
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                Colunas obrigatórias
+                            </h5>
+
+                            <p class="text-muted">
+                                A nova base precisa conter:
+                            </p>
+
+
+                            {% for entrada in entradas %}
+
+                            <span
+                                class="badge bg-primary me-2 mb-2 p-2"
+                            >
+                                {{ entrada }}
+                            </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card border-0 mt-4">
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                Importar Nova Base
+                            </h5>
+
+
+                            <form
+                                method="POST"
+                                enctype="multipart/form-data"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="acao"
+                                    value="predizer"
+                                >
+
+
+                                <input
+                                    type="file"
+                                    name="arquivo_predicao"
+                                    class="form-control"
+                                    accept=".csv,.xlsx"
+                                    required
+                                >
+
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary mt-3"
+                                >
+                                    Executar Predição
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if predicao_concluida and resultado_predicao %}
+
+                    <div class="alert alert-success mt-4">
+
+                        <strong>
+                            ✓ Predição concluída
+                        </strong>
+
+                    </div>
+
+
+                    <h4 class="fw-bold mt-5">
+                        Resultado das Predições
+                    </h4>
+
+
+                    <div class="lab-toolbar mt-3" id="toolbar-predicao-classificacao"><div class="d-flex gap-2 flex-wrap"><input id="busca-predicao-classificacao" class="form-control form-control-sm" placeholder="Buscar nos resultados..."><select id="filtro-predicao-classificacao" class="form-select form-select-sm" style="width:auto"><option value="todos">Todos</option><option value="0">Classe 0</option><option value="1">Classe 1</option></select></div><div class="d-flex gap-2 align-items-center"><small id="contagem-predicao-classificacao" class="text-muted"></small><select id="por-pagina-predicao-classificacao" class="form-select form-select-sm" style="width:auto"><option>10</option><option>25</option><option>50</option></select></div></div>
+                    <div class="table-responsive mt-3">
+
+                        <table id="tabela-predicao-classificacao" class="table table-bordered table-hover align-middle">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    {% for coluna in resultado_predicao[0].keys() %}
+
+                                    <th>
+                                        {{ coluna }}
+                                    </th>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for linha in resultado_predicao %}
+
+                                <tr>
+
+                                    {% for valor in linha.values() %}
+
+                                    <td>
+                                        {{ valor }}
+                                    </td>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div><div id="paginacao-predicao-classificacao" class="lab-pagination mt-3"></div>
+
+
+                    <a
+                        href="/supervisionado/classificacao/baixar-predicoes"
+                        class="btn btn-success mt-3"
+                    >
+                        Baixar Resultado em Excel
+                    </a>
+
+                    {% endif %}
+
+
+                    <div class="d-flex justify-content-between mt-5">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-go-step="8"
+                        >
+                            ← Avaliação
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-go-step="10"
+                        >
+                            Próxima: Comparação →
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PASSO 10 -->
+        <!-- COMPARAÇÃO -->
+        <!-- ================================================= -->
+
+        <section
+            id="step-10"
+            class="wizard-content d-none"
+        >
+
+            {% if avaliacao_concluida %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <h3 class="fw-bold">
+                        10. Comparação dos Algoritmos
+                    </h3>
+
+                    <p class="text-muted">
+                        Compare diferentes algoritmos
+                        utilizando exatamente a mesma base
+                        de treinamento e teste.
+                    </p>
+
+
+                    <div class="alert alert-info mt-4">
+
+                        <strong>
+                            Comparação justa
+                        </strong>
+
+                        <br><br>
+
+                        Regressão Logística, KNN,
+                        Árvore de Decisão e Random Forest
+                        serão treinados com os mesmos dados.
+                        Assim é possível comparar seus indicadores.
+
+                    </div>
+
+
+                    <div class="text-center my-4">
+
+                        <form method="POST">
+
+                            <input
+                                type="hidden"
+                                name="acao"
+                                value="comparar"
+                            >
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-lg px-5"
+                            >
+                                Comparar Algoritmos
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    {% if comparacao_concluida and comparacao %}
+
+                    <h4 class="fw-bold mt-5">
+                        Indicadores por Algoritmo
+                    </h4>
+
+
+                    <div class="table-responsive mt-3">
+
+                        <table class="table table-bordered table-hover">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>Algoritmo</th>
+                                    <th>Acurácia</th>
+                                    <th>Precisão</th>
+                                    <th>Recall</th>
+                                    <th>F1-Score</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for item in comparacao %}
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            {{ item.algoritmo }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ item.acuracia }}%
+                                    </td>
+
+                                    <td>
+                                        {{ item.precisao }}%
+                                    </td>
+
+                                    <td>
+                                        {{ item.recall }}%
+                                    </td>
+
+                                    <td>
+                                        {{ item.f1 }}%
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="card bg-light border-0 mt-4">
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                Como interpretar?
+                            </h5>
+
+                            <p class="mb-0">
+                                Não existe um algoritmo que seja
+                                sempre o melhor para todos os problemas.
+                                Observe como cada técnica se comportou
+                                sobre a mesma base e compare os indicadores
+                                de acordo com o objetivo da classificação.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <div class="mt-5">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-go-step="9"
+                        >
+                            ← Predição
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- ABERTURA AUTOMÁTICA -->
+        <!-- ================================================= -->
+
+        <div
+            id="abrir-etapa"
+            data-etapa="{{ etapa_atual }}"
+            style="display:none;"
+        ></div>
+
+    </main>
+
+
+    <!-- ===================================================== -->
+    <!-- JAVASCRIPT -->
+    <!-- ===================================================== -->
+
+    <script>
+
+        /* =====================================================
+           WIZARD
+        ===================================================== */
+
+        const botoesWizard =
+            document.querySelectorAll(
+                ".wizard-step"
+            );
+
+
+        const conteudos =
+            document.querySelectorAll(
+                ".wizard-content"
+            );
+
+
+        function abrirEtapa(numero) {
+
+            const botao =
+                document.querySelector(
+                    '[data-step="' +
+                    numero +
+                    '"]'
+                );
+
+
+            if (
+                !botao
+                ||
+                botao.disabled
+            ) {
+                return;
+            }
+
+
+            conteudos.forEach(
+                function (item) {
+
+                    item.classList.add(
+                        "d-none"
+                    );
+
+                }
+            );
+
+
+            botoesWizard.forEach(
+                function (item) {
+
+                    item.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            const tela =
+                document.getElementById(
+                    "step-" +
+                    numero
+                );
+
+
+            if (tela) {
+
+                tela.classList.remove(
+                    "d-none"
+                );
+
+            }
+
+
+            botao.classList.add(
+                "active"
+            );
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        botoesWizard.forEach(
+            function (botao) {
+
+                botao.addEventListener(
+                    "click",
+                    function () {
+
+                        abrirEtapa(
+                            this.dataset.step
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        document
+            .querySelectorAll(
+                "[data-go-step]"
+            )
+            .forEach(
+                function (botao) {
+
+                    botao.addEventListener(
+                        "click",
+                        function () {
+
+                            abrirEtapa(
+                                this.dataset.goStep
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+
+
+        /* =====================================================
+           PASSO 7
+           TREINAMENTO COM TERMINAL
+        ===================================================== */
+
+        const botaoTreinarClassificacao =
+            document.getElementById(
+                "botao-treinar-classificacao"
+            );
+
+
+        const terminalClassificacao =
+            document.getElementById(
+                "terminal-classificacao"
+            );
+
+
+        const painelProgressoClassificacao =
+            document.getElementById(
+                "painel-progresso-classificacao"
+            );
+
+
+        let streamTreinamentoClassificacao =
+            null;
+
+
+        function escreverTerminalClassificacao(
+            texto,
+            tipo
+        ) {
+
+            if (!terminalClassificacao) {
+                return;
+            }
+
+
+            const linha =
+                document.createElement(
+                    "div"
+                );
+
+
+            const cores = {
+
+                inicio:
+                    "#ffffff",
+
+                info:
+                    "#adb5bd",
+
+                etapa:
+                    "#6ea8fe",
+
+                calculo:
+                    "#d1e7dd",
+
+                destaque:
+                    "#ffc107",
+
+                sucesso:
+                    "#20c997",
+
+                erro:
+                    "#ff6b6b",
+
+                separador:
+                    "#667085"
+
+            };
+
+
+            linha.style.color =
+                cores[tipo]
+                ||
+                "#d1e7dd";
+
+
+            linha.textContent =
+                texto;
+
+
+            terminalClassificacao.appendChild(
+                linha
+            );
+
+
+            terminalClassificacao.scrollTop =
+                terminalClassificacao.scrollHeight;
+
+        }
+
+
+        if (botaoTreinarClassificacao) {
+
+            botaoTreinarClassificacao.addEventListener(
+                "click",
+                function () {
+
+
+                    if (streamTreinamentoClassificacao) {
+
+                        streamTreinamentoClassificacao.close();
+
+                    }
+
+
+                    terminalClassificacao.innerHTML =
+                        "";
+
+
+                    painelProgressoClassificacao
+                        .classList
+                        .remove(
+                            "d-none"
+                        );
+
+
+                    botaoTreinarClassificacao.disabled =
+                        true;
+
+
+                    botaoTreinarClassificacao.textContent =
+                        "Treinando...";
+
+
+                    streamTreinamentoClassificacao =
+                        new EventSource(
+                            "/supervisionado/classificacao/treinar-stream"
+                        );
+
+
+                    streamTreinamentoClassificacao.onmessage =
+                        function (evento) {
+
+
+                            const dados =
+                                JSON.parse(
+                                    evento.data
+                                );
+
+
+                            if (
+                                dados.tipo ===
+                                "fim"
+                            ) {
+
+                                streamTreinamentoClassificacao.close();
+
+
+                                painelProgressoClassificacao
+                                    .classList
+                                    .add(
+                                        "d-none"
+                                    );
+
+
+                                botaoTreinarClassificacao.disabled =
+                                    false;
+
+
+                                botaoTreinarClassificacao.textContent =
+                                    "Treinar Novamente";
+
+
+                                escreverTerminalClassificacao(
+                                    dados.mensagem,
+                                    "sucesso"
+                                );
+
+
+                                const resultado =
+                                    document.getElementById(
+                                        "resultado-treinamento-classificacao"
+                                    );
+
+
+                                resultado.classList.remove(
+                                    "d-none"
+                                );
+
+
+                                document.getElementById(
+                                    "resultado-classificacao-algoritmo"
+                                ).textContent =
+                                    dados.algoritmo;
+
+
+                                document.getElementById(
+                                    "resultado-classificacao-treino"
+                                ).textContent =
+                                    dados.registros_treino;
+
+
+                                document.getElementById(
+                                    "resultado-classificacao-entradas"
+                                ).textContent =
+                                    dados.quantidade_entradas;
+
+
+                                const botaoAvaliacao =
+                                    document.getElementById(
+                                        "botao-ir-avaliacao-classificacao"
+                                    );
+
+
+                                if (botaoAvaliacao) {
+
+                                    botaoAvaliacao.disabled =
+                                        false;
+
+                                }
+
+
+                                const wizardTreinamento =
+                                    document.querySelector(
+                                        '[data-step="7"]'
+                                    );
+
+
+                                if (wizardTreinamento) {
+
+                                    wizardTreinamento.classList.add(
+                                        "completed"
+                                    );
+
+
+                                    const numero =
+                                        wizardTreinamento.querySelector(
+                                            ".wizard-number"
+                                        );
+
+
+                                    if (numero) {
+
+                                        numero.textContent =
+                                            "✓";
+
+                                    }
+
+                                }
+
+
+                                const wizardAvaliacao =
+                                    document.querySelector(
+                                        '[data-step="8"]'
+                                    );
+
+
+                                if (wizardAvaliacao) {
+
+                                    wizardAvaliacao.disabled =
+                                        false;
+
+
+                                    wizardAvaliacao.classList.remove(
+                                        "locked"
+                                    );
+
+                                }
+
+
+                                return;
+
+                            }
+
+
+                            if (
+                                dados.tipo ===
+                                "erro"
+                            ) {
+
+                                escreverTerminalClassificacao(
+                                    dados.mensagem,
+                                    "erro"
+                                );
+
+
+                                streamTreinamentoClassificacao.close();
+
+
+                                painelProgressoClassificacao
+                                    .classList
+                                    .add(
+                                        "d-none"
+                                    );
+
+
+                                botaoTreinarClassificacao.disabled =
+                                    false;
+
+
+                                botaoTreinarClassificacao.textContent =
+                                    "Treinar Modelo";
+
+
+                                return;
+
+                            }
+
+
+                            escreverTerminalClassificacao(
+                                dados.mensagem,
+                                dados.tipo
+                            );
+
+                        };
+
+
+                    streamTreinamentoClassificacao.onerror =
+                        function () {
+
+
+                            if (
+                                streamTreinamentoClassificacao
+                            ) {
+
+                                streamTreinamentoClassificacao.close();
+
+                            }
+
+
+                            painelProgressoClassificacao
+                                .classList
+                                .add(
+                                    "d-none"
+                                );
+
+
+                            botaoTreinarClassificacao.disabled =
+                                false;
+
+
+                            botaoTreinarClassificacao.textContent =
+                                "Treinar Modelo";
+
+                        };
+
+                }
+            );
+
+        }
+
+
+        document
+            .getElementById(
+                "limpar-terminal-classificacao"
+            )
+            ?.addEventListener(
+                "click",
+                function () {
+
+                    if (terminalClassificacao) {
+
+                        terminalClassificacao.innerHTML =
+                            "";
+
+                    }
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "botao-ir-avaliacao-classificacao"
+            )
+            ?.addEventListener(
+                "click",
+                function () {
+
+                    abrirEtapa(
+                        8
+                    );
+
+                }
+            );
+
+
+        /* =====================================================
+           PASSO 8
+           AVALIAÇÃO - MESMO PADRÃO DA REDE NEURAL
+        ===================================================== */
+
+        const botaoAvaliarClassificacao =
+            document.getElementById(
+                "botao-avaliar-classificacao"
+            );
+
+
+        if (botaoAvaliarClassificacao) {
+
+            botaoAvaliarClassificacao.addEventListener(
+                "click",
+                async function () {
+
+
+                    botaoAvaliarClassificacao.disabled =
+                        true;
+
+
+                    botaoAvaliarClassificacao.textContent =
+                        "Avaliando...";
+
+
+                    try {
+
+                        const resposta =
+                            await fetch(
+                                "/supervisionado/classificacao/avaliar-modelo"
+                            );
+
+
+                        const dados =
+                            await resposta.json();
+
+
+                        if (!dados.sucesso) {
+
+                            alert(
+                                dados.mensagem
+                            );
+
+                            return;
+
+                        }
+
+
+                        /* RESUMO */
+
+                        document.getElementById(
+                            "avaliacao-classificacao-total"
+                        ).textContent =
+                            dados.total;
+
+
+                        document.getElementById(
+                            "avaliacao-classificacao-acertos"
+                        ).textContent =
+                            dados.acertos;
+
+
+                        document.getElementById(
+                            "avaliacao-classificacao-erros"
+                        ).textContent =
+                            dados.erros;
+
+
+                        /* INDICADORES */
+
+                        document.getElementById(
+                            "metrica-classificacao-acuracia"
+                        ).textContent =
+                            dados.acuracia +
+                            "%";
+
+
+                        document.getElementById(
+                            "metrica-classificacao-precisao"
+                        ).textContent =
+                            dados.precisao +
+                            "%";
+
+
+                        document.getElementById(
+                            "metrica-classificacao-recall"
+                        ).textContent =
+                            dados.recall +
+                            "%";
+
+
+                        document.getElementById(
+                            "metrica-classificacao-f1"
+                        ).textContent = dados.f1 + "%";
+
+                        /* SUPORTE, MATRIZ REAL x PREVISTO E MÉTRICAS BINÁRIAS/MULTICLASSE */
+                        const supportEl = document.getElementById("metrica-classificacao-support");
+                        const textoSupport = (dados.support || []).map(x => `${x.classe}: ${x.quantidade}`).join(" | ");
+                        if (supportEl) {
+                            supportEl.textContent = textoSupport || "-";
+                            supportEl.style.fontSize = "1rem";
+                        }
+                        const totalAvaliado = Number(dados.total || 0);
+                        const valoresDiag = (dados.matriz_completa || []).map((linha, i) => Number(linha[i] || 0));
+                        const acertados = valoresDiag.reduce((total, valor) => total + valor, 0);
+                        const modo = dados.multiclasse ? "média macro entre as classes" : "classe positiva (código 1)";
+                        const formulas = {
+                            "formula-classificacao-acuracia": `${acertados} acertos / ${totalAvaliado} registros = ${dados.acuracia}%`,
+                            "formula-classificacao-precisao": `Precisão (${modo}): ${dados.precisao}%`,
+                            "formula-classificacao-recall": `Recall (${modo}): ${dados.recall}%`,
+                            "formula-classificacao-f1": `F1-Score (${modo}): ${dados.f1}%`,
+                            "formula-classificacao-support": textoSupport
+                        };
+                        Object.entries(formulas).forEach(([id,valor]) => {
+                            const el = document.getElementById(id);
+                            if (el) el.textContent = valor;
+                        });
+                        const matrizEl = document.getElementById("matriz-classificacao-dinamica");
+                        if (matrizEl) {
+                            matrizEl.replaceChildren();
+                            const tabela = document.createElement("table");
+                            tabela.className = "table table-bordered table-hover text-center align-middle bg-white";
+                            const cabeca = document.createElement("thead");
+                            cabeca.className = "table-primary";
+                            const header = document.createElement("tr");
+                            const canto = document.createElement("th");
+                            canto.textContent = "Real ↓ / Previsto →";
+                            header.appendChild(canto);
+                            (dados.classes || []).forEach(nome => {
+                                const th = document.createElement("th"); th.textContent = nome; header.appendChild(th);
+                            });
+                            cabeca.appendChild(header); tabela.appendChild(cabeca);
+                            const corpo = document.createElement("tbody");
+                            (dados.matriz_completa || []).forEach((linha, i) => {
+                                const tr = document.createElement("tr");
+                                const titulo = document.createElement("th");
+                                titulo.scope = "row"; titulo.textContent = dados.classes[i]; tr.appendChild(titulo);
+                                linha.forEach((valor, j) => {
+                                    const td = document.createElement("td");
+                                    td.className = i === j ? "table-success fw-bold" : "table-danger";
+                                    td.textContent = String(valor); tr.appendChild(td);
+                                });
+                                corpo.appendChild(tr);
+                            });
+                            tabela.appendChild(corpo); matrizEl.appendChild(tabela);
+                        }
+                        const legenda = document.getElementById("legenda-matriz-classificacao");
+                        if (legenda) legenda.textContent = "Linhas: classe real | Colunas: previsão | Verde: acertos | Vermelho: erros.";
+                        /* TABELA COM BUSCA, FILTRO E PAGINAÇÃO */
+                        iniciarTabelaAvaliacaoClassificacao(dados.resultados || []);
+                        const painelAnimado = document.getElementById("painel-avaliacao-classificacao");
+                        if (painelAnimado) { painelAnimado.classList.remove("avaliacao-animar"); void painelAnimado.offsetWidth; painelAnimado.classList.add("avaliacao-animar"); }
+
+                        document
+                            .getElementById(
+                                "painel-avaliacao-classificacao"
+                            )
+                            .classList
+                            .remove(
+                                "d-none"
+                            );
+
+
+                        const wizardAvaliacao =
+                            document.querySelector(
+                                '[data-step="8"]'
+                            );
+
+
+                        if (wizardAvaliacao) {
+
+                            wizardAvaliacao.classList.add(
+                                "completed"
+                            );
+
+
+                            const numero =
+                                wizardAvaliacao.querySelector(
+                                    ".wizard-number"
+                                );
+
+
+                            if (numero) {
+
+                                numero.textContent =
+                                    "✓";
+
+                            }
+
+                        }
+
+
+                        const wizardPredicao =
+                            document.querySelector(
+                                '[data-step="9"]'
+                            );
+
+
+                        if (wizardPredicao) {
+
+                            wizardPredicao.disabled =
+                                false;
+
+
+                            wizardPredicao.classList.remove(
+                                "locked"
+                            );
+
+                        }
+
+                    }
+
+                    catch (erro) {
+
+                        console.error(
+                            erro
+                        );
+
+
+                        alert(
+                            "Erro ao avaliar o modelo."
+                        );
+
+                    }
+
+                    finally {
+
+                        botaoAvaliarClassificacao.disabled =
+                            false;
+
+
+                        botaoAvaliarClassificacao.textContent =
+                            "Avaliar Novamente";
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        document
+            .getElementById(
+                "ir-predicao-classificacao"
+            )
+            ?.addEventListener(
+                "click",
+                function () {
+
+                    abrirEtapa(
+                        9
+                    );
+
+                }
+            );
+
+
+
+        let resultadosAvaliacaoClassificacao = [];
+        let paginaAvaliacaoClassificacao = 1;
+        let filtroAvaliacaoClassificacao = "todos";
+
+        function renderPaginacao(containerId, paginaAtual, totalPaginas, aoMudarPagina) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = "";
+            if (totalPaginas <= 1) return;
+
+            const criarBotao = (texto, pagina, ativo = false, desabilitado = false) => {
+                const botao = document.createElement("button");
+                botao.type = "button";
+                botao.className = "btn btn-sm " + (ativo ? "btn-primary" : "btn-outline-secondary");
+                botao.textContent = texto;
+                botao.disabled = desabilitado;
+                botao.addEventListener("click", () => aoMudarPagina(pagina));
+                container.appendChild(botao);
+            };
+
+            criarBotao("‹", Math.max(1, paginaAtual - 1), false, paginaAtual === 1);
+
+            const inicio = Math.max(1, paginaAtual - 2);
+            const fim = Math.min(totalPaginas, inicio + 4);
+            for (let p = Math.max(1, fim - 4); p <= fim; p++) {
+                criarBotao(String(p), p, p === paginaAtual);
+            }
+
+            criarBotao("›", Math.min(totalPaginas, paginaAtual + 1), false, paginaAtual === totalPaginas);
+        }
+
+        function iniciarTabelaAvaliacaoClassificacao(resultados){
+            resultadosAvaliacaoClassificacao = resultados || [];
+            paginaAvaliacaoClassificacao = 1;
+            const busca = document.getElementById("busca-avaliacao-classificacao");
+            const por = document.getElementById("por-pagina-avaliacao-classificacao");
+            if (busca && !busca.dataset.listener) { busca.addEventListener("input",()=>{paginaAvaliacaoClassificacao=1;renderAvaliacaoClassificacao();}); busca.dataset.listener="1"; }
+            if (por && !por.dataset.listener) { por.addEventListener("change",()=>{paginaAvaliacaoClassificacao=1;renderAvaliacaoClassificacao();}); por.dataset.listener="1"; }
+            document.querySelectorAll(".filtro-avaliacao").forEach(btn=>{
+                if(!btn.dataset.listener){ btn.addEventListener("click",()=>{
+                    filtroAvaliacaoClassificacao=btn.dataset.filtro; paginaAvaliacaoClassificacao=1;
+                    document.querySelectorAll(".filtro-avaliacao").forEach(b=>{b.classList.remove("btn-primary","btn-success","btn-danger"); b.classList.add(b.dataset.filtro==="acerto"?"btn-outline-success":b.dataset.filtro==="erro"?"btn-outline-danger":"btn-outline-primary");});
+                    btn.className="btn filtro-avaliacao "+(btn.dataset.filtro==="acerto"?"btn-success":btn.dataset.filtro==="erro"?"btn-danger":"btn-primary");
+                    renderAvaliacaoClassificacao();
+                }); btn.dataset.listener="1"; }
+            });
+            renderAvaliacaoClassificacao();
+        }
+
+        function renderAvaliacaoClassificacao(){
+            const tbody=document.getElementById("tabela-avaliacao-classificacao"); if(!tbody)return;
+            const busca=(document.getElementById("busca-avaliacao-classificacao")?.value||"").toLowerCase();
+            const pp=parseInt(document.getElementById("por-pagina-avaliacao-classificacao")?.value||"10");
+            let lista=resultadosAvaliacaoClassificacao.filter(i=>{
+                const ok=String(i.resultado||"").toLowerCase()==="acerto";
+                const filtroOk=filtroAvaliacaoClassificacao==="todos"||(filtroAvaliacaoClassificacao==="acerto"&&ok)||(filtroAvaliacaoClassificacao==="erro"&&!ok);
+                const buscaOk=[i.registro,i.esperado,i.previsto,i.resultado].some(v=>String(v??"").toLowerCase().includes(busca));
+                return filtroOk&&buscaOk;
+            });
+            const totalPag=Math.max(1,Math.ceil(lista.length/pp)); paginaAvaliacaoClassificacao=Math.min(paginaAvaliacaoClassificacao,totalPag);
+            const ini=(paginaAvaliacaoClassificacao-1)*pp, fatia=lista.slice(ini,ini+pp); tbody.innerHTML="";
+            fatia.forEach(i=>{const ok=String(i.resultado||"").toLowerCase()==="acerto";const tr=document.createElement("tr");tr.innerHTML=`<td>${i.registro}</td><td>${i.esperado}</td><td>${i.previsto}</td><td><span class="lab-result-badge ${ok?'ok':'err'}">${ok?'✓ Acerto':'✕ Erro'}</span></td>`;tbody.appendChild(tr);});
+            const cont=document.getElementById("contagem-avaliacao-classificacao"); if(cont)cont.textContent=lista.length?`Exibindo ${ini+1}–${Math.min(ini+pp,lista.length)} de ${lista.length}`:"Nenhum registro";
+            renderPaginacao("paginacao-avaliacao-classificacao",paginaAvaliacaoClassificacao,totalPag,p=>{paginaAvaliacaoClassificacao=p;renderAvaliacaoClassificacao();});
+        }
+
+        function iniciarPaginacaoPredicaoClassificacao(){
+            const tabela=document.getElementById("tabela-predicao-classificacao"); if(!tabela)return;
+            const linhas=Array.from(tabela.querySelectorAll("tbody tr")); if(!linhas.length)return;
+            let pagina=1;
+            const busca=document.getElementById("busca-predicao-classificacao"), filtro=document.getElementById("filtro-predicao-classificacao"), por=document.getElementById("por-pagina-predicao-classificacao");
+            function render(){const termo=(busca?.value||"").toLowerCase();const f=filtro?.value||"todos";const pp=parseInt(por?.value||"10");let vis=linhas.filter(tr=>{const txt=tr.textContent.toLowerCase();const cells=tr.querySelectorAll("td");const ultima=cells[cells.length-1]?.textContent.trim();return txt.includes(termo)&&(f==="todos"||ultima===f)});const tp=Math.max(1,Math.ceil(vis.length/pp));pagina=Math.min(pagina,tp);linhas.forEach(tr=>tr.style.display="none");const ini=(pagina-1)*pp;vis.slice(ini,ini+pp).forEach(tr=>tr.style.display="");const c=document.getElementById("contagem-predicao-classificacao");if(c)c.textContent=vis.length?`Exibindo ${ini+1}–${Math.min(ini+pp,vis.length)} de ${vis.length}`:"Nenhum registro";renderPaginacao("paginacao-predicao-classificacao",pagina,tp,p=>{pagina=p;render()});}
+            [busca,filtro,por].forEach(el=>{if(el){el.addEventListener("input",()=>{pagina=1;render()});el.addEventListener("change",()=>{pagina=1;render()})}});render();
+        }
+        document.addEventListener("DOMContentLoaded",()=>{iniciarPaginacaoPredicaoClassificacao();document.querySelectorAll('.lab-toggle-intro').forEach(btn=>{const target=document.querySelector(btn.dataset.bsTarget);target?.addEventListener('hidden.bs.collapse',()=>btn.textContent='Mostrar explicação');target?.addEventListener('shown.bs.collapse',()=>btn.textContent='Ocultar explicação')})});
+
+        /* RESUMO DINÂMICO - SELEÇÃO DAS VARIÁVEIS */
+        function atualizarResumoVariaveisClassificacao() {
+            const resumoEntradas = document.getElementById("resumo-entradas");
+            const resumoSaida = document.getElementById("resumo-saida");
+            if (!resumoEntradas || !resumoSaida) return;
+            const entradas = Array.from(document.querySelectorAll(".input-entrada:checked"));
+            const saida = document.querySelector(".input-saida:checked");
+            resumoEntradas.innerHTML = entradas.length ? entradas.map((el,i) => `<span class="badge bg-primary me-2 mb-2 p-2">X${i+1} = ${el.value}</span>`).join("") : '<span class="text-muted">Nenhuma entrada selecionada.</span>';
+            resumoSaida.innerHTML = saida ? `<span class="badge bg-success p-2">Y = ${saida.value}</span>` : '<span class="text-muted">Nenhuma saída selecionada.</span>';
+        }
+        document.querySelectorAll(".input-entrada, .input-saida").forEach(el => el.addEventListener("change", function () {
+            if (this.checked) {
+                const celula = this.closest("tr");
+                if (celula) {
+                    const oposto = celula.querySelector(this.classList.contains("input-saida") ? ".input-entrada" : ".input-saida");
+                    if (oposto) oposto.checked = false;
+                }
+            }
+            atualizarResumoVariaveisClassificacao();
+        }));
+        atualizarResumoVariaveisClassificacao();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof bootstrap !== "undefined") {
+                document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+            }
+        });
+
+        const abrirAutomatico =
+            document.getElementById(
+                "abrir-etapa"
+            );
+
+
+        if (abrirAutomatico) {
+
+            abrirEtapa(
+                abrirAutomatico.dataset.etapa
+            );
+
+        }
+
+    </script>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+</body>
+
+</html>

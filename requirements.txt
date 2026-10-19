@@ -1,6 +1,7 @@
 Flask
-gunicorn
 pandas
 numpy
 scikit-learn
 openpyxl
+Pillow
+tensorflow

@@ -1,0 +1,422 @@
+<!doctype html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Laboratório de Regressão</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+
+:root{--lab-blue:#0d6efd;--lab-dark:#101828;--lab-muted:#667085;--lab-border:#e4e7ec;--lab-soft:#f8fafc;--lab-green:#12b76a;--lab-red:#f04438}
+
+body{background:#f7f9fc;color:#101828}.navbar{background:#0d6efd!important}.navbar .navbar-brand,.navbar .nav-link{color:rgba(255,255,255,.92)!important}.navbar .nav-link.active{color:#fff!important;font-weight:700}.brand{font-weight:800;color:#fff!important}.shell{width:100%;max-width:none}.hero{background:transparent;border:0;box-shadow:none;padding:0}.hero>.d-flex{justify-content:center!important;text-align:center}.hero>.d-flex>div:first-child{width:100%}.hero .section-badge{display:none}.hero h2{font-size:2.1rem}.hero form{position:static!important;width:100%;display:flex;justify-content:flex-end;margin-top:14px!important;margin-bottom:2px}.hero form .btn{padding:.55rem 1rem;font-size:.95rem;border-radius:10px}.cardx{background:#fff;border:1px solid var(--lab-border);border-radius:20px;padding:28px;box-shadow:0 4px 14px rgba(16,24,40,.04);margin-bottom:24px}.stage-title{font-weight:800;color:#101828}.section-badge{font-size:.75rem;font-weight:800;color:var(--lab-blue);text-transform:uppercase;letter-spacing:.08em}.hint{background:#eef7ff;border:1px solid #dbeafe;border-radius:11px;padding:12px 14px}.successbox{background:#ecfdf3;border:1px solid #abefc6;border-radius:11px;padding:12px 14px}.metric{background:#fff;border:1px solid var(--lab-border);border-radius:14px;padding:18px;height:100%;box-shadow:0 4px 14px rgba(16,24,40,.035)}.metric .value{font-size:1.8rem;font-weight:800}.mini{font-size:.84rem;color:var(--lab-muted)}.algo{display:block;background:#fff;border:1px solid var(--lab-border);border-radius:14px;padding:16px;height:100%;cursor:pointer;transition:.18s}.algo:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,24,40,.07);border-color:#b2ccff}.algo:has(input:checked){border:2px solid var(--lab-blue);background:#f5f9ff}.tag{font-size:.72rem;background:#eef4ff;color:#175cd3;border-radius:999px;padding:4px 8px}.table-wrap{overflow:auto;border:1px solid var(--lab-border);border-radius:14px}.table{margin:0}.table thead th{background:#f8fafc;color:#475467;font-size:.78rem;white-space:nowrap}.terminal{background:#101828;color:#d0d5dd;border-radius:14px;padding:16px;font-family:Consolas,monospace}.formula{background:#f8fafc;border:1px solid var(--lab-border);border-radius:10px;padding:8px;font-family:Consolas,monospace;font-size:.85rem}.btn-primary{font-weight:700}.wizard{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;overflow-x:auto;padding:4px 4px 10px;min-width:980px}.wizard-wrap{overflow-x:auto;margin:28px 0 34px}.wstep{position:relative;min-width:92px;flex:1;text-align:center;color:#98a2b3;font-size:.78rem}.wstep:not(:last-child)::after{content:'';position:absolute;top:18px;left:calc(50% + 23px);right:calc(-50% + 23px);height:2px;background:#e4e7ec;z-index:0}.dot{position:relative;z-index:1;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;margin:0 auto 7px;background:#eaecf0;color:#667085;font-weight:800}.wstep.on{color:var(--lab-blue);font-weight:700}.wstep.on .dot{background:var(--lab-blue);color:#fff}.wstep.done{color:var(--lab-green)}.wstep.done .dot{background:#dcfae6;color:#079455}.wstep.done:not(:last-child)::after{background:#abefc6}
+
+@media(max-width:768px){.cardx{padding:18px}.hero form{justify-content:center;margin-top:12px!important}.hero>.d-flex{display:block!important}.wizard{min-width:900px}}
+
+.menu-indisponivel{opacity:.72;cursor:not-allowed}.menu-em-breve{display:block;font-size:.58rem;line-height:.8;text-align:center;color:rgba(255,255,255,.72)}
+
+
+
+/* Avaliação no mesmo padrão visual da Classificação */
+
+.avaliacao-resumo{border:1px solid #e4e7ec;border-radius:16px;overflow:hidden;background:#fff}.avaliacao-resumo-item{text-align:center;padding:18px 12px}.avaliacao-resumo-item+.avaliacao-resumo-item{border-left:1px solid #e4e7ec}.avaliacao-resumo-item span{display:block;color:#667085;font-size:.82rem;margin-bottom:5px}.avaliacao-resumo-item strong{font-size:1.65rem;color:#101828}.indicador-card{border:1px solid #e4e7ec!important;border-radius:16px!important;transition:.18s}.indicador-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,24,40,.08)!important}.indicador-ilustracao{font-size:1.7rem;margin-bottom:6px}.indicador-valor{font-size:1.55rem;font-weight:800;margin:7px 0}.indicador-pergunta{font-size:.76rem;color:#667085;min-height:34px}.avaliacao-detalhe{border:0;background:transparent;color:#0d6efd;font-size:.75rem;font-weight:700;padding:5px 0}.formula-box{border:1px solid #e4e7ec;border-radius:16px;overflow:hidden;background:#fff}.formula-linha{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px}.formula-linha+.formula-linha{border-top:1px solid #e4e7ec}.formula-linha code{color:#344054;background:#f8fafc;padding:6px 9px;border-radius:8px;text-align:right}.avaliacao-escala{background:#eef7ff;border:1px solid #dbeafe;border-radius:14px;padding:15px 17px}.wizard-nav-form{display:block;position:relative;z-index:2}.wizard-nav-btn{border:0;background:transparent;padding:0;width:100%;color:inherit;font:inherit}.wstep.done .wizard-nav-btn{cursor:pointer}.wstep.done .wizard-nav-btn:hover span{text-decoration:underline}.wstep.done:hover .dot{transform:scale(1.06);box-shadow:0 4px 12px rgba(18,183,106,.18)}.dot{transition:.18s}
+
+@media(max-width:767px){.avaliacao-resumo-item+.avaliacao-resumo-item{border-left:0;border-top:1px solid #e4e7ec}.formula-linha{align-items:flex-start;flex-direction:column}.formula-linha code{text-align:left;width:100%}}
+
+</style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+
+  <div class="container-fluid px-4">
+
+    <a class="navbar-brand fw-bold" href="/home">🧠 Laboratório ML</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu"><span class="navbar-toggler-icon"></span></button>
+
+    <div class="collapse navbar-collapse" id="menuPrincipal">
+
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+
+        <li class="nav-item"><a class="nav-link" href="/home">Início</a></li>
+
+        <li class="nav-item"><a class="nav-link" href="/">Redes Neurais</a></li>
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Supervisionado</a>
+
+          <ul class="dropdown-menu">
+
+            <li><a class="dropdown-item" href="/supervisionado/classificacao">Classificação</a></li>
+
+            <li><a class="dropdown-item active" href="/supervisionado/regressao">Regressão</a></li>
+           <li><a class="dropdown-item" href="/supervisionado/classificacao-imagens">Classificação de Imagens</a></li>
+
+          </ul>
+
+        </li>
+
+        <li class="nav-item"><span class="nav-link menu-indisponivel" title="Laboratório em desenvolvimento">Não Supervisionado <small class="menu-em-breve">Em breve</small></span></li>
+
+        <li class="nav-item"><span class="nav-link menu-indisponivel" title="Laboratório em desenvolvimento">Reforço <small class="menu-em-breve">Em breve</small></span></li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</nav>
+
+<main class="container-fluid px-4 py-5">
+
+<div class="hero mb-3"><div class="d-flex justify-content-between align-items-start gap-3 flex-wrap"><div><div class="section-badge">Aprendizado Supervisionado</div><h2 class="stage-title mb-1">Aprendizado Supervisionado — Regressão</h2><p class="text-muted mb-0">Da importação dos dados à preparação, treinamento, avaliação, predição e comparação.</p></div><form method="post" action="/supervisionado/regressao/resetar" onsubmit="return confirm('Deseja realmente começar de novo? Todos os dados e resultados desta execução serão apagados.');"><button class="btn btn-outline-danger">↻ Começar de novo</button></form></div>
+
+<div class="wizard-wrap"><div class="wizard">{% for n,nome in [(1,'Importação'),(2,'Visualização'),(3,'Preparação'),(4,'Variáveis'),(5,'Treino/Teste'),(6,'Algoritmo'),(7,'Treinamento'),(8,'Avaliação'),(9,'Predição'),(10,'Comparação')] %}<div class="wstep {% if etapa_atual==n %}on{% elif n <= etapa_maxima %}done{% endif %}">{% if n <= etapa_maxima and n != etapa_atual %}<form method="post" class="wizard-nav-form"><input type="hidden" name="acao" value="navegar_etapa"><input type="hidden" name="etapa_destino" value="{{n}}"><button type="submit" class="wizard-nav-btn" title="Ir para {{nome}}"><div class="dot"><i class="bi bi-check-lg"></i></div><span>{{nome}}</span></button></form>{% else %}<div class="dot">{{n}}</div><span>{{nome}}</span>{% endif %}</div>{% endfor %}</div></div></div>
+
+{% if erro %}<div class="alert alert-danger mb-4"><strong>Erro</strong><br>{{erro}}</div>{% endif %}{% if mensagem %}<div class="alert alert-success mb-4"><strong>✓ Operação concluída</strong><br>{{mensagem}}</div>{% endif %}
+
+
+
+{% if etapa_atual==1 %}<section class="cardx"><div class="section-badge">Etapa 1</div><h3 class="stage-title">Importação da base</h3><div class="row g-3 my-1"><div class="col-md-4"><div class="metric"><b>O que é regressão?</b><p class="mini mt-2 mb-0">O modelo aprende relações entre variáveis para estimar um número, como preço, consumo, temperatura ou vendas.</p></div></div><div class="col-md-4"><div class="metric"><b>Entradas X</b><p class="mini mt-2 mb-0">São as características usadas para explicar ou prever o resultado.</p></div></div><div class="col-md-4"><div class="metric"><b>Saída Y</b><p class="mini mt-2 mb-0">É o valor numérico que queremos prever. Ex.: preço do imóvel.</p></div></div></div><form method="post" enctype="multipart/form-data" class="mt-3"><input type="hidden" name="acao" value="importar"><label class="form-label fw-bold">CSV ou Excel</label><input class="form-control form-control-lg" type="file" name="arquivo" accept=".csv,.xlsx,.xls" required><button class="btn btn-primary mt-3">Importar Planilha <i class="bi bi-arrow-right ms-1"></i></button></form></section>{% endif %}
+
+
+
+{% if etapa_atual==2 %}<section class="cardx"><div class="section-badge">Etapa 2</div><h3 class="stage-title">Visualização da base</h3><div class="row g-3 my-2"><div class="col-md-3"><div class="metric"><div class="mini">Registros</div><div class="value">{{quantidade_registros}}</div></div></div><div class="col-md-3"><div class="metric"><div class="mini">Colunas</div><div class="value">{{quantidade_colunas}}</div></div></div><div class="col-md-3"><div class="metric"><div class="mini">Ausentes</div><div class="value">{{total_ausentes}}</div></div></div><div class="col-md-3"><div class="metric"><div class="mini">Duplicados</div><div class="value">{{total_duplicados}}</div></div></div></div><div class="hint mb-3"><b>O que observar?</b> Tipos das colunas, valores ausentes, duplicados e se existe uma variável numérica adequada para ser a saída Y.</div><div class="table-wrap mb-3"><table class="table"><thead><tr><th>Coluna</th><th>Tipo</th><th>Ausentes</th><th>Únicos</th></tr></thead><tbody>{% for x in analise_colunas %}<tr><td>{{x.coluna}}</td><td>{{x.tipo}}</td><td>{{x.ausentes}}</td><td>{{x.unicos}}</td></tr>{% endfor %}</tbody></table></div><form method="post"><input type="hidden" name="acao" value="ir_preparacao"><button class="btn btn-primary">Ir para Preparação <i class="bi bi-arrow-right"></i></button></form></section>{% endif %}
+
+
+
+{% if etapa_atual==3 %}<section class="cardx"><div class="section-badge">Etapa 3</div><h3 class="stage-title">Preparação: Limpeza + Normalização</h3><div class="row g-3 mb-3"><div class="col-md-4"><div class="metric"><b>1. Remover duplicados</b><p class="mini mt-2 mb-0">Evita que registros repetidos tenham peso indevido no aprendizado.</p></div></div><div class="col-md-4"><div class="metric"><b>2. Tratar ausentes</b><p class="mini mt-2 mb-0">Numéricos recebem a mediana; textuais recebem a moda.</p></div></div><div class="col-md-4"><div class="metric"><b>3. Normalizar</b><p class="mini mt-2 mb-0">Variáveis numéricas são convertidas para a escala de 0 a 1 com Min-Max.</p></div></div></div><div class="hint mb-3"><b>Por que normalizar?</b> Coloca variáveis com escalas diferentes em uma faixa comparável, especialmente importante para métodos baseados em distância e regularização.</div><form method="post"><input type="hidden" name="acao" value="preparar"><button class="btn btn-primary btn-lg"><i class="bi bi-stars me-1"></i>Executar Limpeza e Normalização</button></form></section>{% endif %}
+
+
+
+{% if etapa_atual==4 %}<section class="cardx"><div class="section-badge">Etapa 3 concluída</div><h3 class="stage-title">Limpeza + Normalização</h3><div class="successbox mb-3"><b><i class="bi bi-check-circle me-2"></i>Preparação concluída.</b> Duplicados foram removidos, ausentes tratados e colunas numéricas normalizadas com Min-Max entre 0 e 1.</div><div class="hint mb-3"><b>Min-Max:</b> <span class="formula">x' = (x − mínimo) / (máximo − mínimo)</span> <span class="mini">Os mínimos e máximos originais ficam guardados para novas predições.</span></div><div class="table-wrap mb-3"><table class="table"><thead><tr><th>Variável normalizada</th><th>Mínimo original</th><th>Máximo original</th></tr></thead><tbody>{% for x in normalizacao_resumo %}<tr><td>{{x.coluna}}</td><td>{{x.minimo}}</td><td>{{x.maximo}}</td></tr>{% endfor %}</tbody></table></div><hr><div class="section-badge">Etapa 4</div><h3 class="stage-title">Seleção das Variáveis</h3><p class="text-secondary">Escolha quais colunas serão as <strong>entradas X</strong> e qual será a <strong>saída Y</strong>. Em regressão, Y deve representar um valor numérico contínuo.</p><form method="post" id="formVars"><input type="hidden" name="acao" value="selecionar_variaveis"><div class="table-wrap"><table class="table align-middle"><thead><tr><th>Coluna</th><th>Tipo</th><th>Valores únicos</th><th>Sugestão</th><th class="text-center">Entrada X</th><th class="text-center">Saída Y</th></tr></thead><tbody>{% for v in variaveis_disponiveis %}<tr><td><b>{{v.coluna}}</b></td><td>{{v.tipo}}</td><td>{{v.unicos}}</td><td class="mini">{{v.sugestao}}</td><td class="text-center">{% if v.pode_entrada %}<input class="form-check-input xvar" type="checkbox" name="entradas" value="{{v.coluna}}">{% else %}—{% endif %}</td><td class="text-center">{% if v.pode_saida %}<input class="form-check-input yvar" type="radio" name="saida" value="{{v.coluna}}">{% else %}—{% endif %}</td></tr>{% endfor %}</tbody></table></div><div class="hint mt-3" id="resumoVars"><b>Modelo:</b> selecione X e Y.</div><button class="btn btn-primary mt-3">Confirmar Variáveis <i class="bi bi-arrow-right"></i></button></form></section>{% endif %}
+
+
+
+{% if etapa_atual==5 %}<section class="cardx"><div class="section-badge">Etapa 5</div><h3 class="stage-title">Divisão Treino / Teste</h3><div class="hint mb-3"><b>Por que separar?</b> O modelo aprende com o conjunto de treino e é avaliado em registros que não utilizou para aprender. Isso mede sua capacidade de generalização.</div><div class="successbox mb-3"><b>X:</b> {{entradas|join(', ')}} &nbsp; <b>Y:</b> {{saida}}</div><form method="post"><input type="hidden" name="acao" value="dividir"><label class="form-label fw-bold">Percentual para treinamento</label><select class="form-select" name="percentual_treino"><option value="70">70% treino / 30% teste</option><option value="80" selected>80% treino / 20% teste</option><option value="90">90% treino / 10% teste</option></select><button class="btn btn-primary mt-3">Dividir Base <i class="bi bi-arrow-right"></i></button></form></section>{% endif %}
+
+
+
+{% if etapa_atual==6 %}<section class="cardx"><div class="section-badge">Etapa 6</div><h3 class="stage-title">Escolha do Algoritmo</h3><p class="text-secondary">Não existe um algoritmo ideal para toda base. Use as características abaixo para formular uma escolha e depois compare o desempenho na Etapa 10.</p><div class="successbox mb-3"><b>{{qtd_treino}}</b> registros de treino e <b>{{qtd_teste}}</b> de teste.</div><form method="post"><input type="hidden" name="acao" value="selecionar_algoritmo"><div class="row g-3">
+
+{% set algos=[('linear','Regressão Linear','Relação aproximadamente linear','Simples, rápida e interpretável.','Pode não capturar relações curvas ou muito complexas.'),('ridge','Regressão Ridge','Muitas variáveis ou correlação entre entradas','Linear, mas reduz coeficientes excessivos com regularização.','Continua assumindo uma relação predominantemente linear.'),('knn','KNN Regressor','Padrões locais e bases menores','Prevê usando valores de registros semelhantes.','Sensível à escala e pode ficar lento em bases grandes.'),('arvore','Árvore de Decisão','Relações não lineares e regras fáceis de visualizar','Captura cortes e interações sem exigir relação linear.','Pode sofrer overfitting.'),('random_forest','Random Forest','Relações complexas e busca por robustez','Combina várias árvores e costuma reduzir overfitting.','Menos interpretável e mais pesado que uma única árvore.')] %}
+
+{% for id,nome,quando,vant,atencao in algos %}<div class="col-lg-6"><label class="algo"><div class="d-flex gap-2"><input class="form-check-input mt-1" type="radio" name="algoritmo" value="{{id}}" required><div><h5 class="mb-2">{{nome}}</h5><div class="mb-2"><span class="tag">Quando escolher</span> <span class="mini">{{quando}}</span></div><p class="mini mb-1"><b>Vantagem:</b> {{vant}}</p><p class="mini mb-0"><b>Atenção:</b> {{atencao}}</p></div></div></label></div>{% endfor %}</div><div class="hint mt-3"><b>Guia rápido:</b> comece com <strong>Regressão Linear</strong> como referência. Se suspeitar de relações não lineares, teste <strong>Árvore</strong> ou <strong>Random Forest</strong>. Para padrões baseados em vizinhança, teste <strong>KNN</strong>. Use a comparação final para verificar os resultados na mesma divisão de dados.</div><button class="btn btn-primary mt-3">Confirmar Algoritmo <i class="bi bi-arrow-right"></i></button></form></section>{% endif %}
+
+
+
+{% if etapa_atual==7 %}
+
+<section class="cardx">
+
+  <div class="section-badge">Etapa 7</div>
+
+  <h3 class="stage-title">Treinamento do Modelo</h3>
+
+  <p class="text-secondary">O algoritmo aprenderá os padrões utilizando somente a base de treinamento.</p>
+
+
+
+  <div class="row g-3 mt-3">
+
+    <div class="col-lg-4">
+
+      <div class="card bg-light border-0 h-100">
+
+        <div class="card-body">
+
+          <h5 class="fw-bold text-primary">Algoritmo</h5>
+
+          <p class="mb-0">{{ algoritmo_nome }}</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+      <div class="card bg-light border-0 h-100">
+
+        <div class="card-body">
+
+          <h5 class="fw-bold text-primary">Registros de Treino</h5>
+
+          <p class="mb-0 fs-4 fw-bold">{{ qtd_treino }}</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+      <div class="card bg-light border-0 h-100">
+
+        <div class="card-body">
+
+          <h5 class="fw-bold text-primary">Registros de Teste</h5>
+
+          <p class="mb-0 fs-4 fw-bold">{{ qtd_teste }}</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="card bg-light border-0 mt-4">
+
+    <div class="card-body">
+
+      <h5 class="fw-bold">Modelo Configurado</h5>
+
+      <h6 class="fw-bold mt-4">Entradas</h6>
+
+      {% for entrada in entradas %}
+
+      <span class="badge bg-primary me-2 mb-2 p-2">X{{ loop.index }} = {{ entrada }}</span>
+
+      {% endfor %}
+
+      <h6 class="fw-bold mt-4">Saída numérica</h6>
+
+      <span class="badge bg-success p-2">Y = {{ saida }}</span>
+
+    </div>
+
+  </div>
+
+
+
+  <form method="post" id="form-treinar-regressao">
+
+    <input type="hidden" name="acao" value="treinar">
+
+    <div class="text-center my-4">
+
+      <button type="submit" id="botao-treinar-regressao" class="btn btn-primary btn-lg px-5">▶ Treinar Modelo</button>
+
+    </div>
+
+  </form>
+
+
+
+  <div id="painel-progresso-regressao" class="d-none mt-4">
+
+    <div class="progress">
+
+      <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%">Treinando...</div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="mt-5">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div>
+
+        <h4 class="fw-bold">Terminal do Treinamento</h4>
+
+        <p class="text-muted mb-0">Acompanhe as etapas do treinamento do modelo de regressão.</p>
+
+      </div>
+
+      <button type="button" id="limpar-terminal-regressao" class="btn btn-outline-secondary btn-sm">Limpar</button>
+
+    </div>
+
+    <div id="terminal-regressao" class="mt-3 p-4 rounded" style="background:#101828;color:#d1e7dd;min-height:190px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:pre-wrap;overflow:auto;">$ Modelo configurado e pronto para treinamento.
+
+$ Algoritmo: {{ algoritmo_nome }}
+
+$ Registros de treino: {{ qtd_treino }}
+
+$ Registros de teste: {{ qtd_teste }}
+
+$ Saída numérica: {{ saida }}
+
+$ Clique em “Treinar Modelo” para iniciar.</div>
+
+  </div>
+
+
+
+  <div class="hint mt-4"><b>O que acontece nesta etapa?</b> O modelo recebe as entradas X e a saída numérica Y do conjunto de treino e ajusta seus parâmetros para reduzir o erro entre os valores reais e os valores previstos.</div>
+
+</section>
+
+{% endif %}
+
+
+
+{% if etapa_atual==8 %}
+
+<section class="cardx">
+
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+
+    <div>
+
+      <div class="section-badge">Etapa 8</div>
+
+      <h3 class="stage-title mb-2">Avaliação do Modelo</h3>
+
+      <p class="text-muted mb-0">Veja como o modelo se comporta com registros que não participaram do treinamento.</p>
+
+    </div>
+
+    {% if not avaliacao_concluida %}<form method="post"><input type="hidden" name="acao" value="avaliar"><button class="btn btn-primary btn-lg px-4">Avaliar Modelo</button></form>{% endif %}
+
+  </div>
+
+
+
+  {% if avaliacao_concluida %}
+
+  <div class="avaliacao-resumo mt-5"><div class="row g-0">
+
+    <div class="col-md-4 avaliacao-resumo-item"><span>Registros avaliados</span><strong>{{avaliacao.total}}</strong></div>
+
+    <div class="col-md-4 avaliacao-resumo-item"><span>Erro absoluto médio (MAE)</span><strong class="text-primary">{{ "%.2f"|format(avaliacao.mae) }}</strong></div>
+
+    <div class="col-md-4 avaliacao-resumo-item"><span>Coeficiente R²</span><strong class="text-success">{{ "%.4f"|format(avaliacao.r2) }}</strong></div>
+
+  </div></div>
+
+
+
+  <div class="d-flex justify-content-between align-items-end mt-5 mb-3"><div><h4 class="fw-bold mb-1">Indicadores de Desempenho</h4><p class="text-muted mb-0">Cada indicador responde a uma pergunta sobre o erro e a qualidade das previsões.</p></div></div>
+
+  <div class="row g-3">
+
+    <div class="col-sm-6 col-xl"><div class="card indicador-card shadow-sm h-100 text-center"><div class="card-body p-3"><div class="indicador-ilustracao">📏</div><h6 class="fw-bold mb-0">MAE</h6><div class="indicador-valor text-primary">{{ "%.2f"|format(avaliacao.mae) }}</div><div class="indicador-pergunta">Em média, quanto a previsão se afasta do valor real?</div><button type="button" class="avaliacao-detalhe" data-bs-toggle="collapse" data-bs-target="#detalhe-mae">Saiba mais</button><div id="detalhe-mae" class="collapse text-start mt-2"><small class="text-muted">Erro Absoluto Médio. Mantém a mesma unidade de {{saida}}. Menor é melhor.</small></div></div></div></div>
+
+    <div class="col-sm-6 col-xl"><div class="card indicador-card shadow-sm h-100 text-center"><div class="card-body p-3"><div class="indicador-ilustracao">🧮</div><h6 class="fw-bold mb-0">MSE</h6><div class="indicador-valor text-danger">{{ "%.2f"|format(avaliacao.mse) }}</div><div class="indicador-pergunta">Existem erros grandes que precisam ser penalizados?</div><button type="button" class="avaliacao-detalhe" data-bs-toggle="collapse" data-bs-target="#detalhe-mse">Saiba mais</button><div id="detalhe-mse" class="collapse text-start mt-2"><small class="text-muted">Erro Quadrático Médio. Eleva os erros ao quadrado e dá mais peso aos maiores desvios.</small></div></div></div></div>
+
+    <div class="col-sm-6 col-xl"><div class="card indicador-card shadow-sm h-100 text-center"><div class="card-body p-3"><div class="indicador-ilustracao">🎯</div><h6 class="fw-bold mb-0">RMSE</h6><div class="indicador-valor text-warning">{{ "%.2f"|format(avaliacao.rmse) }}</div><div class="indicador-pergunta">Qual é o tamanho típico do erro, penalizando erros grandes?</div><button type="button" class="avaliacao-detalhe" data-bs-toggle="collapse" data-bs-target="#detalhe-rmse">Saiba mais</button><div id="detalhe-rmse" class="collapse text-start mt-2"><small class="text-muted">Raiz do MSE. Volta à unidade original de {{saida}}. Menor é melhor.</small></div></div></div></div>
+
+    <div class="col-sm-6 col-xl"><div class="card indicador-card shadow-sm h-100 text-center"><div class="card-body p-3"><div class="indicador-ilustracao">📈</div><h6 class="fw-bold mb-0">R²</h6><div class="indicador-valor text-success">{{ "%.4f"|format(avaliacao.r2) }}</div><div class="indicador-pergunta">Quanto da variação dos dados o modelo consegue explicar?</div><button type="button" class="avaliacao-detalhe" data-bs-toggle="collapse" data-bs-target="#detalhe-r2">Saiba mais</button><div id="detalhe-r2" class="collapse text-start mt-2"><small class="text-muted">Quanto mais próximo de 1, maior a proporção da variação explicada pelo modelo.</small></div></div></div></div>
+
+    <div class="col-sm-6 col-xl"><div class="card indicador-card shadow-sm h-100 text-center"><div class="card-body p-3"><div class="indicador-ilustracao">👥</div><h6 class="fw-bold mb-0">Support</h6><div class="indicador-valor text-info">{{avaliacao.total}}</div><div class="indicador-pergunta">Quantos registros sustentam esta avaliação?</div><button type="button" class="avaliacao-detalhe" data-bs-toggle="collapse" data-bs-target="#detalhe-support-reg">Saiba mais</button><div id="detalhe-support-reg" class="collapse text-start mt-2"><small class="text-muted">Não mede desempenho. Indica a quantidade de registros usados para calcular as métricas.</small></div></div></div></div>
+
+  </div>
+
+
+
+  <div class="row g-4 mt-4">
+
+    <div class="col-lg-6"><h4 class="fw-bold mb-3">Como interpretar?</h4><div class="avaliacao-escala"><strong>Escala original de {{saida}}</strong><p class="text-muted small mb-0 mt-2">O modelo aprende com os dados normalizados, mas Real, Previsto, MAE, MSE e RMSE são apresentados na escala original para que o erro tenha significado no problema.</p></div><div class="hint mt-3"><b>Leitura conjunta:</b> observe MAE e RMSE para entender o tamanho do erro e use R² para analisar quanto da variação de Y está sendo explicada.</div></div>
+
+    <div class="col-lg-6"><h4 class="fw-bold mb-3">Como foi calculado?</h4><p class="text-muted small">As fórmulas abaixo usam os resultados desta avaliação.</p><div class="formula-box"><div class="formula-linha"><strong>MAE</strong><code>média(|real − previsto|) = {{ "%.2f"|format(avaliacao.mae) }}</code></div><div class="formula-linha"><strong>MSE</strong><code>média((real − previsto)²) = {{ "%.2f"|format(avaliacao.mse) }}</code></div><div class="formula-linha"><strong>RMSE</strong><code>√MSE = {{ "%.2f"|format(avaliacao.rmse) }}</code></div><div class="formula-linha"><strong>R²</strong><code>1 − SSE/SST = {{ "%.4f"|format(avaliacao.r2) }}</code></div></div></div>
+
+  </div>
+
+
+
+  <div class="mt-5"><h4 class="fw-bold mb-1">Resultado por Registro</h4><p class="text-muted">Compare o valor real com a previsão realizada pelo modelo.</p><div class="d-flex gap-2 flex-wrap mb-3"><input id="busca" class="form-control" style="max-width:320px" placeholder="Buscar registro ou valor..."><select id="porPagina" class="form-select" style="width:auto"><option>10</option><option>25</option><option>50</option></select><span id="contagem" class="mini align-self-center"></span></div><div class="table-wrap"><table class="table" id="tabAval"><thead><tr><th>Registro</th><th>Real</th><th>Previsto</th><th>Erro</th><th>Erro absoluto</th></tr></thead><tbody>{% for r in avaliacao.resultados %}<tr><td>{{r.registro}}</td><td>{{ "%.2f"|format(r.real) }}</td><td>{{ "%.2f"|format(r.previsto) }}</td><td>{{ "%.2f"|format(r.erro) }}</td><td>{{ "%.2f"|format(r.erro_abs) }}</td></tr>{% endfor %}</tbody></table></div><div id="pag" class="d-flex gap-1 flex-wrap mt-3"></div></div>
+
+  <div class="alert alert-light border mt-4">A próxima etapa usa uma nova base sem o valor Y conhecido.</div><form method="post"><input type="hidden" name="acao" value="ir_predicao"><button class="btn btn-primary">Ir para Predição <i class="bi bi-arrow-right"></i></button></form>
+
+  {% endif %}
+
+</section>
+
+{% endif %}
+
+{% if etapa_atual==9 %}<section class="cardx" id="predicao"><div class="section-badge">Etapa 9</div><h3 class="stage-title">Predição</h3><div class="hint mb-3"><b>Agora Y é desconhecido.</b> Envie uma nova base contendo as mesmas entradas X: {{entradas|join(', ')}}. O sistema aplicará a mesma normalização da base de treinamento e devolverá <strong>Valor_Previsto</strong> na escala original de <strong>{{saida}}</strong>.</div><form id="predForm" method="post" enctype="multipart/form-data"><input type="hidden" name="acao" value="predizer"><input class="form-control" type="file" name="arquivo_predicao" accept=".csv,.xlsx,.xls" required><button class="btn btn-primary mt-3">Realizar Predição <i class="bi bi-arrow-right"></i></button></form></section>{% endif %}
+
+
+
+{% if etapa_atual==10 %}<section class="cardx"><div class="section-badge">Etapa 9 concluída</div><h3 class="stage-title">Resultados da Predição</h3>{% if resultado_predicao %}<div class="table-wrap mb-3"><table class="table"><thead><tr>{% for k in resultado_predicao[0].keys() %}{% if k != 'Valor_Previsto_Normalizado' %}<th>{{ 'Valor Previsto' if k == 'Valor_Previsto' else k }}</th>{% endif %}{% endfor %}</tr></thead><tbody>{% for r in resultado_predicao %}<tr>{% for k,v in r.items() %}{% if k != 'Valor_Previsto_Normalizado' %}<td>{% if k == 'Valor_Previsto' %}<strong>{{ "%.2f"|format(v) }}</strong>{% elif v is number and v is not integer %}{{ "%.2f"|format(v) }}{% else %}{{v}}{% endif %}</td>{% endif %}{% endfor %}</tr>{% endfor %}</tbody></table></div><div class="hint mb-3"><b>Leitura:</b> o <strong>Valor Previsto</strong> já está na escala original de <strong>{{saida}}</strong>. A coluna normalizada é usada apenas internamente pelo modelo e não é exibida aqui.</div><a class="btn btn-outline-primary" href="/supervisionado/regressao/baixar-predicoes"><i class="bi bi-file-earmark-excel"></i> Baixar Excel</a>{% endif %}<hr class="my-4"><div class="section-badge">Etapa 10</div><h3 class="stage-title">Comparação de Algoritmos</h3><div class="hint mb-3"><b>Comparação controlada:</b> todos os algoritmos usam exatamente a mesma divisão treino/teste. Compare principalmente <strong>MAE/RMSE menores</strong> e <strong>R²</strong> para entender o comportamento de cada modelo. MAE e RMSE são exibidos na escala original de <strong>{{saida}}</strong>.</div>{% if not comparacao_concluida %}<form method="post"><input type="hidden" name="acao" value="comparar"><button class="btn btn-primary">Comparar Algoritmos</button></form>{% else %}<div class="table-wrap"><table class="table"><thead><tr><th>Algoritmo</th><th>MAE ↓</th><th>RMSE ↓</th><th>R²</th></tr></thead><tbody>{% for r in comparacao %}<tr><td><b>{{r.algoritmo}}</b></td><td>{{ "%.2f"|format(r.mae) }}</td><td>{{ "%.2f"|format(r.rmse) }}</td><td>{{ "%.4f"|format(r.r2) }}</td></tr>{% endfor %}</tbody></table></div><div class="successbox mt-3">Use os resultados para discutir <strong>erro, generalização e complexidade</strong>. Uma única métrica não deve ser interpretada isoladamente.</div>{% endif %}</section>{% endif %}
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+function resumoVars(){const xs=[...document.querySelectorAll('.xvar:checked')].map((e,i)=>`X${i+1} = ${e.value}`);const y=document.querySelector('.yvar:checked');const box=document.getElementById('resumoVars');if(box)box.innerHTML='<b>Modelo:</b> '+(xs.length?xs.join(' • '):'nenhuma entrada')+' → '+(y?'Y = '+y.value:'selecione Y');}document.querySelectorAll('.xvar,.yvar').forEach(e=>e.addEventListener('change',resumoVars));
+
+(function(){const t=document.getElementById('tabAval');if(!t)return;const rows=[...t.tBodies[0].rows], busca=document.getElementById('busca'), pp=document.getElementById('porPagina'), pag=document.getElementById('pag'), cont=document.getElementById('contagem');let page=1;function render(){const q=(busca.value||'').toLowerCase(), n=+pp.value;const f=rows.filter(r=>r.innerText.toLowerCase().includes(q));const pages=Math.max(1,Math.ceil(f.length/n));page=Math.min(page,pages);rows.forEach(r=>r.style.display='none');f.slice((page-1)*n,page*n).forEach(r=>r.style.display='');cont.textContent=f.length?`Exibindo ${(page-1)*n+1}–${Math.min(page*n,f.length)} de ${f.length}`:'Nenhum resultado';pag.innerHTML='';for(let i=1;i<=pages;i++){const b=document.createElement('button');b.type='button';b.className='btn btn-sm '+(i===page?'btn-primary':'btn-outline-secondary');b.textContent=i;b.onclick=()=>{page=i;render()};pag.appendChild(b)}}busca.oninput=()=>{page=1;render()};pp.onchange=()=>{page=1;render()};render()})();
+
+</script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+const form = document.getElementById('form-treinar-regressao');
+
+const botao = document.getElementById('botao-treinar-regressao');
+
+const progresso = document.getElementById('painel-progresso-regressao');
+
+const terminal = document.getElementById('terminal-regressao');
+
+const limpar = document.getElementById('limpar-terminal-regressao');
+
+
+
+  if (limpar && terminal) {
+
+    limpar.addEventListener('click', function () { terminal.textContent = ''; });
+
+  }
+
+
+
+  if (form && botao && terminal) {
+
+    form.addEventListener('submit', function () {
+
+      botao.disabled = true;
+
+      botao.innerHTML = 'Treinando...';
+
+      if (progresso) progresso.classList.remove('d-none');
+
+      terminal.textContent += '\n$ Iniciando treinamento...';
+
+      terminal.textContent += '\n$ Ajustando o modelo com a base de treinamento...';
+
+      terminal.textContent += '\n$ Aguarde a conclusão do processamento.';
+
+      terminal.scrollTop = terminal.scrollHeight;
+
+    });
+
+  }
+
+});
+
+</script>
+
+
+
+</body></html>

@@ -40,7 +40,7 @@
                 class="navbar-brand fw-bold"
                 href="/home"
             >
-                🧠 Laboratório ML
+                 Laboratório ML
             </a>
 
 
@@ -100,22 +100,49 @@
 
                     <!-- SUPERVISIONADO -->
 
-                    <li class="nav-item">
+                     <li class="nav-item dropdown">
 
-                        <span
-                            class="nav-link menu-indisponivel"
-                            title="Laboratório em desenvolvimento"
+                        <a
+                            class="nav-link dropdown-toggle active"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
                         >
                             Supervisionado
+                        </a>
 
-                            <small class="menu-em-breve">
-                                Em breve
-                            </small>
 
-                        </span>
+                        <ul class="dropdown-menu">
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item active"
+                                    href="/supervisionado/classificacao"
+                                >
+                                    Classificação
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <span class="dropdown-item text-muted">
+                                    Regressão
+                                    <small class="ms-1">
+                                        Em breve
+                                    </small>
+                                </span>
+
+                            </li>
+
+                        </ul>
 
                     </li>
-
+                    
+                    
 
                     <!-- NÃO SUPERVISIONADO -->
 
